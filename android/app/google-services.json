@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1047359742947",
+    "project_id": "safe-bite-production",
+    "storage_bucket": "safe-bite-production.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1047359742947:android:b96df3d0a8c6ba9985f6d6",
+        "android_client_info": {
+          "package_name": "com.example.safe_bite"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCe4i54DiEB-jKy9MwU6b5pmmuAt27CyWA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
