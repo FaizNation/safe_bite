@@ -41,6 +41,7 @@ dependencies:
   google_generative_ai: ^0.4.7
   equatable: ^2.0.8
   image_picker: ^1.2.1
+  salomon_bottom_bar: ^3.3.2
 
 dev_dependencies:
   flutter_test:
