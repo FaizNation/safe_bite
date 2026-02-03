@@ -1,6 +1,6 @@
-import 'dart:io';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../domain/entities/food_analysis.dart';
 import '../../domain/repositories/scan_repository.dart';
 import '../models/food_analysis_model.dart'; // Import the model
@@ -18,7 +18,7 @@ class ScanRepositoryImpl implements ScanRepository {
           );
 
   @override
-  Future<FoodAnalysis> analyzeImage(File image) async {
+  Future<FoodAnalysis> analyzeImage(XFile image) async {
     try {
       final prompt = TextPart("""
 You are a Nutritionist AI. Analyze this image.
