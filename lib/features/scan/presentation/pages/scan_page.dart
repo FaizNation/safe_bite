@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -28,13 +29,13 @@ class ScanView extends StatefulWidget {
 
 class _ScanViewState extends State<ScanView> {
   final ImagePicker _picker = ImagePicker();
-  File? _image;
+  XFile? _image;
 
   Future<void> _pickImage(ImageSource source) async {
     final XFile? pickedFile = await _picker.pickImage(source: source);
     if (pickedFile != null) {
       setState(() {
-        _image = File(pickedFile.path);
+        _image = pickedFile;
       });
       if (mounted) {
         context.read<ScanCubit>().analyzeImage(_image!);
@@ -53,7 +54,9 @@ class _ScanViewState extends State<ScanView> {
             if (_image != null)
               SizedBox(
                 height: 200,
-                child: Image.file(_image!, fit: BoxFit.cover),
+                child: kIsWeb
+                    ? Image.network(_image!.path, fit: BoxFit.cover)
+                    : Image.file(File(_image!.path), fit: BoxFit.cover),
               )
             else
               Container(
