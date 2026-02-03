@@ -26,9 +26,9 @@ Output STRICT JSON ONLY (no markdown).
 Fields:
 - is_food: boolean
 - food_name: String (Indonesian)
-- category: String (Sayur/Buah/Daging/etc)
+- category: String (Vegetable/Fruit/Meat/Milk/Other) - Choose from these exact values.
 - freshness_level: String (Segar/Layak/Busuk)
-- shelf_life: String
+- shelf_life: String (e.g. "3-4 days in fridge")
 - storage_advice: String
 - calories_approx: int
 - recipe_idea: String
