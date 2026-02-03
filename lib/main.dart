@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'firebase_options.dart';
-import 'screens/splash_screen.dart';
+import 'features/splash/presentation/pages/splash_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,11 +23,9 @@ class SafeBiteApp extends StatelessWidget {
         primaryColor: const Color(0xFF6B9F5E),
         scaffoldBackgroundColor: const Color(0xFFF5F5F5),
         fontFamily: 'Poppins',
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF6B9F5E),
-        ),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF6B9F5E)),
       ),
-      home: const SplashScreen(),
+      home: const SplashPage(),
     );
   }
 }

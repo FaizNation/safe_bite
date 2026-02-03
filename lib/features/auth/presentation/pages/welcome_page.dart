@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'auth_screen.dart';
+import 'auth_page.dart';
 
-class WelcomeScreen extends StatelessWidget {
-  const WelcomeScreen({Key? key}) : super(key: key);
+class WelcomePage extends StatelessWidget {
+  const WelcomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -12,10 +12,7 @@ class WelcomeScreen extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFFF5E6D3),
-              Color(0xFFFFFFFF),
-            ],
+            colors: [Color(0xFFF5E6D3), Color(0xFFFFFFFF)],
           ),
         ),
         child: SafeArea(
@@ -23,11 +20,11 @@ class WelcomeScreen extends StatelessWidget {
             padding: const EdgeInsets.all(24.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch, // Make children fill width
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const Text(
                   'Selamat Datang\ndi Safe Bite',
-                  textAlign: TextAlign.center, // This will now center properly
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -56,11 +53,8 @@ class WelcomeScreen extends StatelessWidget {
                 const SizedBox(height: 30),
                 const Text(
                   'Mari bersama kurangi\nlimbah makanan dan jaga\nlingkungan!',
-                  textAlign: TextAlign.center, // Also center this text
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Color(0xFF5D6D5B),
-                  ),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 16, color: Color(0xFF5D6D5B)),
                 ),
                 const SizedBox(height: 50),
                 ElevatedButton(
@@ -68,26 +62,21 @@ class WelcomeScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const AuthScreen(isLogin: false),
+                        builder: (context) => const AuthPage(isLogin: false),
                       ),
                     );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF6B9F5E),
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 16,
-                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
                   ),
                   child: const Text(
                     'Daftar',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -96,15 +85,13 @@ class WelcomeScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const AuthScreen(isLogin: true),
+                        builder: (context) => const AuthPage(isLogin: true),
                       ),
                     );
                   },
                   style: OutlinedButton.styleFrom(
                     foregroundColor: const Color(0xFF6B9F5E),
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 16,
-                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
                     side: const BorderSide(color: Color(0xFF6B9F5E)),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
@@ -112,10 +99,7 @@ class WelcomeScreen extends StatelessWidget {
                   ),
                   child: const Text(
                     'Masuk',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
               ],

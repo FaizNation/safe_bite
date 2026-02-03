@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../features/scan/presentation/pages/scan_page.dart';
+import '../../../scan/presentation/pages/scan_page.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);

@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
-import 'welcome_screen.dart';
+import '../../../auth/presentation/pages/welcome_page.dart';
 
-class SplashScreen extends StatefulWidget {
-  const SplashScreen({Key? key}) : super(key: key);
+class SplashPage extends StatefulWidget {
+  const SplashPage({Key? key}) : super(key: key);
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  State<SplashPage> createState() => _SplashPageState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+        MaterialPageRoute(builder: (context) => const WelcomePage()),
       );
     });
   }
@@ -35,7 +35,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 borderRadius: BorderRadius.circular(20),
               ),
               child: const Icon(
-                Icons.food_bank_outlined, // Changed icon to be more relevant
+                Icons.food_bank_outlined,
                 size: 80,
                 color: Color(0xFF6B9F5E),
               ),

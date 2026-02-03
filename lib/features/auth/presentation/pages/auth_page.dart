@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
-import 'home_screen.dart';
+import '../../../home/presentation/pages/home_page.dart';
+import '../widgets/social_login_button.dart';
 
-class AuthScreen extends StatefulWidget {
+class AuthPage extends StatefulWidget {
   final bool isLogin;
 
-  const AuthScreen({Key? key, required this.isLogin}) : super(key: key);
+  const AuthPage({Key? key, required this.isLogin}) : super(key: key);
 
   @override
-  State<AuthScreen> createState() => _AuthScreenState();
+  State<AuthPage> createState() => _AuthPageState();
 }
 
-class _AuthScreenState extends State<AuthScreen> {
+class _AuthPageState extends State<AuthPage> {
   final _formKey = GlobalKey<FormState>();
   final _namaController = TextEditingController();
   final _emailController = TextEditingController();
@@ -181,9 +182,7 @@ class _AuthScreenState extends State<AuthScreen> {
                       onPressed: () {},
                       child: const Text(
                         'Lupa kata sandi?',
-                        style: TextStyle(
-                          color: Color(0xFF6B9F5E),
-                        ),
+                        style: TextStyle(color: Color(0xFF6B9F5E)),
                       ),
                     ),
                   ),
@@ -227,20 +226,14 @@ class _AuthScreenState extends State<AuthScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _SocialLoginButton(
+                    SocialLoginButton(
                       icon: Icons.g_mobiledata,
                       onPressed: () {},
                     ),
                     const SizedBox(width: 16),
-                    _SocialLoginButton(
-                      icon: Icons.facebook,
-                      onPressed: () {},
-                    ),
+                    SocialLoginButton(icon: Icons.facebook, onPressed: () {}),
                     const SizedBox(width: 16),
-                    _SocialLoginButton(
-                      icon: Icons.apple,
-                      onPressed: () {},
-                    ),
+                    SocialLoginButton(icon: Icons.apple, onPressed: () {}),
                   ],
                 ),
                 const SizedBox(height: 24),
@@ -259,7 +252,7 @@ class _AuthScreenState extends State<AuthScreen> {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                AuthScreen(isLogin: !widget.isLogin),
+                                AuthPage(isLogin: !widget.isLogin),
                           ),
                         );
                       },
@@ -277,31 +270,6 @@ class _AuthScreenState extends State<AuthScreen> {
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _SocialLoginButton extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback onPressed;
-
-  const _SocialLoginButton({
-    required this.icon,
-    required this.onPressed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onPressed,
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey.shade300),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Icon(icon, size: 28),
       ),
     );
   }
