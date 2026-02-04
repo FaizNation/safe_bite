@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../home/presentation/pages/home_page.dart';
+import '../../../main/presentation/pages/main_page.dart';
 import '../widgets/social_login_button.dart';
 
 class AuthPage extends StatefulWidget {
@@ -32,7 +32,7 @@ class _AuthPageState extends State<AuthPage> {
     if (_formKey.currentState!.validate()) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
+        MaterialPageRoute(builder: (context) => const MainPage()),
       );
     }
   }
