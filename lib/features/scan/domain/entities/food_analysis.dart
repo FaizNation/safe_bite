@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-class FoodAnalysis extends Equatable {
-  final bool isFood;
+class FoodItem extends Equatable {
   final String foodName;
   final String category;
   final String freshnessLevel;
@@ -9,9 +8,10 @@ class FoodAnalysis extends Equatable {
   final String storageAdvice;
   final int caloriesApprox;
   final String recipeIdea;
+  final int quantity;
+  final List<int>? boundingBox;
 
-  const FoodAnalysis({
-    required this.isFood,
+  const FoodItem({
     required this.foodName,
     required this.category,
     required this.freshnessLevel,
@@ -19,11 +19,12 @@ class FoodAnalysis extends Equatable {
     required this.storageAdvice,
     required this.caloriesApprox,
     required this.recipeIdea,
+    this.quantity = 1,
+    this.boundingBox,
   });
 
   @override
   List<Object?> get props => [
-    isFood,
     foodName,
     category,
     freshnessLevel,
@@ -31,5 +32,16 @@ class FoodAnalysis extends Equatable {
     storageAdvice,
     caloriesApprox,
     recipeIdea,
+    boundingBox,
   ];
+}
+
+class FoodAnalysis extends Equatable {
+  final bool isFood;
+  final List<FoodItem> items;
+
+  const FoodAnalysis({required this.isFood, required this.items});
+
+  @override
+  List<Object?> get props => [isFood, items];
 }

@@ -31,7 +31,6 @@ class CameraCubit extends Cubit<CameraState> {
   ) async {
     final previousController = _controller;
 
-    // Dispose previous controller if it exists
     if (previousController != null) {
       await previousController.dispose();
     }
@@ -47,11 +46,9 @@ class CameraCubit extends Cubit<CameraState> {
       _controller = newController;
       await newController.initialize();
 
-      // Re-apply flash mode if supported
       try {
         await newController.setFlashMode(_currentFlashMode);
       } catch (_) {
-        // Flash might not be supported on this camera (e.g. front)
         _currentFlashMode = FlashMode.off;
       }
 
@@ -108,8 +105,6 @@ class CameraCubit extends Cubit<CameraState> {
     try {
       final XFile image = await _controller!.takePicture();
       emit(CameraCaptureSuccess(image));
-      // Optionally re-emit Ready state if we want to stay on screen,
-      // but usually we pop. If we don't pop, we should emit CameraReady again.
     } catch (e) {
       emit(CameraError("Failed to take picture: $e"));
     }
