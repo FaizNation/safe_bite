@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'auth_page.dart';
+import 'login_page.dart';
+import 'register_page.dart';
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({Key? key}) : super(key: key);
@@ -62,7 +63,7 @@ class WelcomePage extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const AuthPage(isLogin: false),
+                        builder: (context) => const RegisterPage(),
                       ),
                     );
                   },
@@ -85,7 +86,7 @@ class WelcomePage extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const AuthPage(isLogin: true),
+                        builder: (context) => const LoginPage(),
                       ),
                     );
                   },
