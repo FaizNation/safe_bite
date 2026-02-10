@@ -4,11 +4,13 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'camera_page.dart';
 import '../../data/repositories/scan_repository_impl.dart';
 import '../cubit/scan_cubit.dart';
 import '../cubit/scan_state.dart';
-import '../../domain/entities/food_analysis.dart';
+import 'package:safe_bite/features/scan/domain/entities/food_analysis.dart';
 
 class ScanPage extends StatelessWidget {
   const ScanPage({super.key});
@@ -149,9 +151,7 @@ class _ScanViewState extends State<ScanView> {
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(
-                      12,
-                    ),
+                    borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.grey.withOpacity(0.2),
@@ -230,7 +230,7 @@ class _ScanViewState extends State<ScanView> {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              'Exp : ${item.shelfLife}', 
+                              'Exp : ${item.shelfLife}',
                               style: TextStyle(
                                 fontSize: 12,
                                 color: Colors.grey.shade600,
@@ -255,18 +255,81 @@ class _ScanViewState extends State<ScanView> {
             child: SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text("Semua data berhasil disimpan ✅"),
-                    ),
-                  );
-                  _resetScan();
+                onPressed: () async {
+                  debugPrint("Button 'Simpan' PRESSED!");
+                  try {
+                    // Check Firebase App
+                    debugPrint("Firebase Project: ${Firebase.app().options.projectId}");
+                    
+                    final user = FirebaseAuth.instance.currentUser;
+                    debugPrint("Current User: ${user?.uid}");
+                    
+                    if (user != null) {
+                      debugPrint('Items to save: ${data.items.length}');
+                      
+                      // Show loading
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (c) => const Center(child: CircularProgressIndicator()),
+                      );
+
+                      await context.read<ScanCubit>().saveResults(
+                        user.uid,
+                        data,
+                        _image,
+                      );
+
+                      // Close loading
+                      if (context.mounted) Navigator.pop(context);
+
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Semua data berhasil disimpan ✅"),
+                            backgroundColor: Colors.green,
+                          ),
+                        );
+                        _resetScan();
+                      }
+                    } else {
+                      if (context.mounted) {
+                         ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Error: User tidak ditemukan. Silakan login ulang."),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
+                    }
+                  } catch (e, stack) {
+                    debugPrint("CRITICAL ERROR IN SAVE: $e");
+                    debugPrint(stack.toString());
+                    
+                    // Close loading if open
+                    if (context.mounted && Navigator.canPop(context)) {
+                       Navigator.pop(context); 
+                    }
+
+                    if (context.mounted) {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text("Gagal Menyimpan"),
+                          content: Text("Error: $e"),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text("OK"),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                  }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(
-                    0xFF558B49,
-                  ),
+                  backgroundColor: const Color(0xFF558B49),
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
@@ -343,9 +406,7 @@ class _ScanViewState extends State<ScanView> {
       decoration: BoxDecoration(
         color: color,
         shape: BoxShape.rectangle,
-        borderRadius: BorderRadius.circular(
-          10,
-        ),
+        borderRadius: BorderRadius.circular(10),
       ),
       child: Icon(icon, color: Colors.white, size: 20),
     );

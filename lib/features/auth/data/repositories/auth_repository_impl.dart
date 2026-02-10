@@ -20,6 +20,7 @@ class AuthRepositoryImpl implements AuthRepository {
         uid: user.uid,
         email: user.email!,
         name: user.displayName,
+        photoUrl: user.photoURL,
       );
     } catch (e) {
       throw Exception('Login Failed: $e');
@@ -39,7 +40,12 @@ class AuthRepositoryImpl implements AuthRepository {
       );
       final user = userCredential.user!;
       await user.updateDisplayName(name);
-      return UserEntity(uid: user.uid, email: user.email!, name: name);
+      return UserEntity(
+        uid: user.uid,
+        email: user.email!,
+        name: name,
+        photoUrl: user.photoURL,
+      );
     } catch (e) {
       throw Exception('Register Failed: $e');
     }
@@ -58,6 +64,7 @@ class AuthRepositoryImpl implements AuthRepository {
         uid: user.uid,
         email: user.email!,
         name: user.displayName,
+        photoUrl: user.photoURL,
       );
     }
     return null;

@@ -10,6 +10,8 @@ class FoodItem extends Equatable {
   final String recipeIdea;
   final int quantity;
   final List<int>? boundingBox;
+  final DateTime? expiryDate;
+  final String? imageUrl;
 
   const FoodItem({
     required this.foodName,
@@ -21,6 +23,8 @@ class FoodItem extends Equatable {
     required this.recipeIdea,
     this.quantity = 1,
     this.boundingBox,
+    this.expiryDate,
+    this.imageUrl,
   });
 
   @override
@@ -33,6 +37,8 @@ class FoodItem extends Equatable {
     caloriesApprox,
     recipeIdea,
     boundingBox,
+    expiryDate,
+    imageUrl,
   ];
 }
 

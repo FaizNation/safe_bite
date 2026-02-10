@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../domain/entities/food_analysis.dart';
 import '../../domain/repositories/scan_repository.dart';
 import 'scan_state.dart';
 
@@ -15,6 +16,19 @@ class ScanCubit extends Cubit<ScanState> {
       emit(ScanSuccess(result));
     } catch (e) {
       emit(ScanFailure(e.toString()));
+    }
+  }
+
+  Future<void> saveResults(
+    String userId,
+    FoodAnalysis analysis,
+    XFile? imageFile,
+  ) async {
+    try {
+      await _repository.saveFoodItems(userId, analysis, imageFile);
+    } catch (e) {
+      emit(ScanFailure('Failed to save: $e'));
+      rethrow; 
     }
   }
 

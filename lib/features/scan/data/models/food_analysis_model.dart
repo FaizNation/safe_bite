@@ -12,6 +12,8 @@ class FoodItemModel extends FoodItem {
     required super.recipeIdea,
     super.quantity = 1,
     super.boundingBox,
+    super.expiryDate,
+    super.imageUrl,
   });
 
   factory FoodItemModel.fromJson(Map<String, dynamic> json) {
@@ -30,6 +32,10 @@ class FoodItemModel extends FoodItem {
       recipeIdea: json['recipe_idea'] ?? 'Unknown',
       quantity: json['quantity'] ?? 1,
       boundingBox: box,
+      expiryDate: json['expiry_date'] != null
+          ? DateTime.tryParse(json['expiry_date'])
+          : null,
+      imageUrl: json['image_url'],
     );
   }
 
@@ -44,6 +50,8 @@ class FoodItemModel extends FoodItem {
       'recipe_idea': recipeIdea,
       'quantity': quantity,
       'box_2d': boundingBox,
+      'expiry_date': expiryDate?.toIso8601String(),
+      'image_url': imageUrl,
     };
   }
 }
