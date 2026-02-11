@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../home/presentation/pages/home_page.dart';
 import '../../../resep/presentation/pages/recipe_page.dart';
 import '../../../stats/presentation/pages/stats_page.dart';
-import '../../../profile/presentation/pages/profile_page.dart';
+import '../../../profile/presentation/screen/profile_screen.dart';
 import '../../../scan/presentation/pages/scan_page.dart';
 
 class MainPage extends StatefulWidget {
@@ -19,7 +19,7 @@ class _MainPageState extends State<MainPage> {
     const HomePage(),
     const RecipePage(),
     const StatsPage(),
-    const ProfilePage(),
+    const ProfileScreen(),
   ];
 
   void _onItemTapped(int index) {
