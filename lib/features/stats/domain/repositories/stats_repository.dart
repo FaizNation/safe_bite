@@ -1,3 +1,5 @@
+import '../entities/stat_item.dart';
+
 abstract class StatsRepository {
-  // Define abstract methods here
+  Future<List<StatItem>> getStats(TimeRange range, String userId);
 }

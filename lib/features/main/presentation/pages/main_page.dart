@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../home/presentation/pages/home_page.dart';
-import '../../../resep/presentation/pages/resep_page.dart';
+import '../../../resep/presentation/pages/recipe_page.dart';
 import '../../../stats/presentation/pages/stats_page.dart';
 import '../../../profile/presentation/pages/profile_page.dart';
 import '../../../scan/presentation/pages/scan_page.dart';
@@ -17,7 +17,7 @@ class _MainPageState extends State<MainPage> {
 
   final List<Widget> _pages = [
     const HomePage(),
-    const ResepPage(),
+    const RecipePage(),
     const StatsPage(),
     const ProfilePage(),
   ];
