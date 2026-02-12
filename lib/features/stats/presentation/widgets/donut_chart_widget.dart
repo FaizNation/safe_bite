@@ -11,36 +11,41 @@ class DonutChartWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     if (items.isEmpty) {
       return const SizedBox(
-        height: 200,
-        child: Center(child: Text("Belum ada data")),
+        height: 250,
+        child: Center(
+          child: Text(
+            "Belum ada data",
+            style: TextStyle(color: Colors.grey, fontSize: 16),
+          ),
+        ),
       );
     }
 
     return SizedBox(
-      height: 200,
+      height: 250,
       child: Stack(
         children: [
           PieChart(
             PieChartData(
               sectionsSpace: 0,
-              centerSpaceRadius: 60,
+              centerSpaceRadius: 70,
               startDegreeOffset: -90,
               sections: items.map((item) {
                 return PieChartSectionData(
                   color: item.color,
                   value: item.percentage,
                   title: '${item.percentage.toStringAsFixed(0)}%',
-                  radius: 30, // Thickness
+                  radius: 40, // Thickness
                   titleStyle: const TextStyle(
-                    fontSize: 12,
+                    fontSize: 14,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
+                  borderSide: const BorderSide(color: Colors.white, width: 2),
                 );
               }).toList(),
             ),
           ),
-          // Optional center text or empty
         ],
       ),
     );

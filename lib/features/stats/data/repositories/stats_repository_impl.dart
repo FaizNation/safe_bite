@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import '../../domain/entities/stat_item.dart';
-import '../../domain/repositories/stats_repository.dart';
+import 'package:safe_bite/features/stats/domain/entities/stat_item.dart';
+import 'package:safe_bite/features/stats/domain/repositories/stats_repository.dart';
 
 class StatsRepositoryImpl implements StatsRepository {
   final FirebaseFirestore firestore;
@@ -30,7 +30,7 @@ class StatsRepositoryImpl implements StatsRepository {
       final querySnapshot = await firestore
           .collection('users')
           .doc(userId)
-          .collection('scans')
+          .collection('food_items') 
           .where(
             'added_at',
             isGreaterThanOrEqualTo: Timestamp.fromDate(startDate),
@@ -45,8 +45,9 @@ class StatsRepositoryImpl implements StatsRepository {
 
       for (var doc in docs) {
         final data = doc.data();
-        final category = data['category'] as String? ?? 'Lainnya';
-        // Normalize category string if needed
+        final rawCategory = data['category'] as String? ?? 'Other';
+        final category = _mapCategoryToIndonesian(rawCategory);
+
         categoryCounts[category] = (categoryCounts[category] ?? 0) + 1;
         totalItems++;
       }
@@ -74,20 +75,38 @@ class StatsRepositoryImpl implements StatsRepository {
     }
   }
 
-  Color _getColorForCategory(String category) {
+  String _mapCategoryToIndonesian(String category) {
     final lower = category.toLowerCase();
-    if (lower.contains('sayur')) return const Color(0xFF43A047);
-    if (lower.contains('buah')) return const Color(0xFF8BC34A);
-    if (lower.contains('daging') ||
+    if (lower.contains('vegetable') || lower.contains('sayur')) return 'Sayur';
+    if (lower.contains('fruit') || lower.contains('buah')) return 'Buah';
+    if (lower.contains('meat') ||
+        lower.contains('daging') ||
+        lower.contains('chicken') ||
         lower.contains('ayam') ||
+        lower.contains('fish') ||
         lower.contains('ikan')) {
-      return const Color(0xFFD32F2F);
+      return 'Daging';
     }
-    if (lower.contains('susu') || lower.contains('dairy'))
-      return const Color(0xFFFBC02D); // Yellow
-    if (lower.contains('roti') || lower.contains('snack'))
-      return const Color(0xFFFFA000); // Orange
+    if (lower.contains('milk') ||
+        lower.contains('dairy') ||
+        lower.contains('susu')) {
+      return 'Susu';
+    }
+    return 'Lainnya';
+  }
 
-    return Colors.grey; // Default
+  Color _getColorForCategory(String category) {
+    switch (category) {
+      case 'Sayur':
+        return const Color(0xFF2E7D32); 
+      case 'Buah':
+        return const Color(0xFF8BC34A); 
+      case 'Daging':
+        return const Color(0xFFD32F2F); 
+      case 'Susu':
+        return const Color(0xFFFFC107); 
+      default:
+        return const Color(0xFF9E9E9E); 
+    }
   }
 }
