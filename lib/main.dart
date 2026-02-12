@@ -10,6 +10,7 @@ import 'features/auth/domain/usecases/login_usecase.dart';
 import 'features/auth/domain/usecases/register_usecase.dart';
 import 'features/auth/domain/usecases/logout_usecase.dart';
 import 'features/auth/presentation/cubit/auth_cubit.dart';
+import 'features/profile/presentation/bloc/profile_cubit.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,6 +41,10 @@ class SafeBiteApp extends StatelessWidget {
                 logoutUseCase: LogoutUseCase(authRepository),
               );
             },
+          ),
+          BlocProvider<ProfileCubit>(
+            create: (context) =>
+                ProfileCubit(authRepository: context.read<AuthRepository>()),
           ),
         ],
         child: MaterialApp(
