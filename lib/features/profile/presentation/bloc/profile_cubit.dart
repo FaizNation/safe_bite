@@ -53,4 +53,24 @@ class ProfileCubit extends Cubit<ProfileState> {
       emit(ProfileError(e.toString()));
     }
   }
+
+  Future<void> changePassword(
+    String currentPassword,
+    String newPassword,
+  ) async {
+    emit(ProfileLoading());
+    try {
+      await authRepository.changePassword(currentPassword, newPassword);
+      // We can emit a success state or just reload user.
+      // For now, let's reload to be safe and maybe the UI handles the "Success" toast/dialog
+      final user = await authRepository.getCurrentUser();
+      if (user != null) {
+        emit(ProfileLoaded(user));
+      } else {
+        emit(const ProfileError('User not found after password change'));
+      }
+    } catch (e) {
+      emit(ProfileError(e.toString().replaceAll('Exception: ', '')));
+    }
+  }
 }

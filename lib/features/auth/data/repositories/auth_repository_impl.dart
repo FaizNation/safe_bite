@@ -110,4 +110,35 @@ class AuthRepositoryImpl implements AuthRepository {
     }
     return null;
   }
+
+  @override
+  Future<void> changePassword(
+    String currentPassword,
+    String newPassword,
+  ) async {
+    final user = _firebaseAuth.currentUser;
+    if (user == null) throw Exception('User not logged in');
+    if (user.email == null) throw Exception('User email not found');
+
+    try {
+      // Re-authenticate user
+      final credential = EmailAuthProvider.credential(
+        email: user.email!,
+        password: currentPassword,
+      );
+      await user.reauthenticateWithCredential(credential);
+
+      // Update password
+      await user.updatePassword(newPassword);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'wrong-password') {
+        throw Exception('Password saat ini salah');
+      } else if (e.code == 'weak-password') {
+        throw Exception('Password baru terlalu lemah');
+      }
+      throw Exception(e.message ?? 'Gagal mengubah password');
+    } catch (e) {
+      throw Exception('Terjadi kesalahan: $e');
+    }
+  }
 }

@@ -11,4 +11,5 @@ abstract class AuthRepository {
     String? photoUrl,
     Uint8List? photoBlob,
   });
+  Future<void> changePassword(String currentPassword, String newPassword);
 }
