@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../../domain/repositories/stats_repository.dart';
-import '../../domain/entities/stat_item.dart'; // Ensure TimeRange is exported or imported
+import 'package:safe_bite/features/stats/domain/repositories/stats_repository.dart';
+import 'package:safe_bite/features/stats/domain/entities/stat_item.dart';
 import 'stats_state.dart';
 
 class StatsCubit extends Cubit<StatsState> {
