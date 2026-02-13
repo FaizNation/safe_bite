@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import '../../domain/entities/stat_item.dart';
+import 'package:safe_bite/features/stats/domain/entities/stat_item.dart';
 
 abstract class StatsState extends Equatable {
   const StatsState();

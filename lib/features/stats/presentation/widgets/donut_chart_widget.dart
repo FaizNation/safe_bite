@@ -1,6 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import '../../domain/entities/stat_item.dart';
+import 'package:safe_bite/features/stats/domain/entities/stat_item.dart';
 
 class DonutChartWidget extends StatelessWidget {
   final List<StatItem> items;
