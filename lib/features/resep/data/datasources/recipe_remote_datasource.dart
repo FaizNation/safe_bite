@@ -7,6 +7,7 @@ abstract class RecipeRemoteDataSource {
   Future<List<RecipeModel>> getRecipesByCategory(String category);
   Future<RecipeDetailModel> getRecipeDetail(String id);
   Future<List<RecipeModel>> getRandomRecipes();
+  Future<List<RecipeModel>> getRecipesByIngredient(String ingredient);
 }
 
 class RecipeRemoteDataSourceImpl implements RecipeRemoteDataSource {
@@ -66,5 +67,25 @@ class RecipeRemoteDataSourceImpl implements RecipeRemoteDataSource {
   @override
   Future<List<RecipeModel>> getRandomRecipes() async {
     return getRecipesByCategory('Breakfast');
+  }
+
+  @override
+  Future<List<RecipeModel>> getRecipesByIngredient(String ingredient) async {
+    try {
+      final response = await client.get(
+        'https://www.themealdb.com/api/json/v1/1/filter.php?i=$ingredient',
+      );
+      final List? meals = response.data['meals'];
+      if (meals == null) return [];
+      return meals.map((json) {
+        final modJson = Map<String, dynamic>.from(json);
+        // Ingredient filter doesn't return category, but we can set it to a placeholder or ignore
+        modJson['strCategory'] = 'Unknown';
+        return RecipeModel.fromJson(modJson);
+      }).toList();
+    } catch (e) {
+      debugPrint('Error getting recipes by ingredient: $e');
+      throw Exception('Failed to get recipes by ingredient');
+    }
   }
 }
