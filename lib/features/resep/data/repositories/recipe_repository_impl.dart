@@ -67,6 +67,21 @@ class RecipeRepositoryImpl implements RecipeRepository {
     return _translateRecipes(recipes);
   }
 
+  @override
+  Future<List<Recipe>> getRecipesByIngredient(String ingredient) async {
+    // 1. Translate ingredient from ID to EN (just in case, though we might pass EN directly)
+    // But since "Susu" -> "Milk", we should translate.
+    final translatedIngredient = await translationHelper.translateText(
+      ingredient,
+      to: 'en',
+    );
+
+    final recipes = await remoteDataSource.getRecipesByIngredient(
+      translatedIngredient,
+    );
+    return _translateRecipes(recipes);
+  }
+
   Future<List<Recipe>> _translateRecipes(List<Recipe> recipes) async {
     if (recipes.isEmpty) return [];
 

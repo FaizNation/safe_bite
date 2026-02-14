@@ -76,18 +76,26 @@ class _RecipeViewState extends State<RecipeView> {
   Widget _buildHeader(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-      ),
+      decoration: const BoxDecoration(color: Colors.white),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
             'Resep',
             style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
+              fontSize: 32,
+              fontWeight: FontWeight.w800,
+              color: Color(0xFF1E1E1E),
+              letterSpacing: -0.5,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Mau masak apa hari ini?',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey.shade600,
+              fontWeight: FontWeight.w500,
             ),
           ),
           const SizedBox(height: 16),
@@ -103,9 +111,7 @@ class _RecipeViewState extends State<RecipeView> {
               }
             },
             onFilterTap: () {
-              // Show filter dialog or bottom sheet
-              // For now, let's just trigger a category filter "Dessert" as a demo
-              context.read<RecipeCubit>().filterByCategory('Dessert');
+              _showFilterDialog(context);
             },
           ),
         ],
@@ -210,7 +216,6 @@ class _RecipeViewState extends State<RecipeView> {
   }
 
   Widget _buildRecommendationCard(BuildContext context, dynamic recipe) {
-
     return Container(
       width: 140,
       decoration: BoxDecoration(
@@ -218,7 +223,7 @@ class _RecipeViewState extends State<RecipeView> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withValues(alpha: 0.1),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -264,6 +269,115 @@ class _RecipeViewState extends State<RecipeView> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  void _showFilterDialog(BuildContext context) {
+    // Capture the cubit from the parent context before showing the modal
+    final cubit = context.read<RecipeCubit>();
+
+    showDialog(
+      context: context,
+      builder: (modalContext) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          backgroundColor: Colors.white,
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Filter Berdasarkan Kategori',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Wrap(
+                  spacing: 12,
+                  runSpacing: 12,
+                  children: [
+                    _buildFilterChip(modalContext, 'Sayur', Icons.grass, () {
+                      cubit.filterByCategory('Vegetarian');
+                      Navigator.pop(modalContext);
+                    }),
+                    _buildFilterChip(
+                      modalContext,
+                      'Daging',
+                      Icons.restaurant,
+                      () {
+                        cubit.filterByCategory('Beef');
+                        Navigator.pop(modalContext);
+                      },
+                    ),
+                    _buildFilterChip(
+                      modalContext,
+                      'Buah',
+                      Icons.local_florist,
+                      () {
+                        cubit.filterByCategory('Dessert');
+                        Navigator.pop(modalContext);
+                      },
+                    ),
+                    _buildFilterChip(
+                      modalContext,
+                      'Susu',
+                      Icons.local_drink,
+                      () {
+                        cubit.filterByIngredient('Milk');
+                        Navigator.pop(modalContext);
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildFilterChip(
+    BuildContext context,
+    String label,
+    IconData icon,
+    VoidCallback onTap,
+  ) {
+    return Material(
+      color: const Color(0xFFE8F5E9),
+      borderRadius: BorderRadius.circular(30),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(30),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30),
+            border: Border.all(color: const Color(0xFFC8E6C9)),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 20, color: const Color(0xFF2E7D32)),
+              const SizedBox(width: 8),
+              Text(
+                label,
+                style: const TextStyle(
+                  color: Color(0xFF2E7D32),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

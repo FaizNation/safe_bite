@@ -13,9 +13,7 @@ class RecipeCubit extends Cubit<RecipeState> {
       emit(RecipeLoading());
 
       final recipes = await repository.getRecipesByCategory('Breakfast');
-      final recommendations = await repository.getRecipesByCategory(
-        'Dessert',
-      );
+      final recommendations = await repository.getRecipesByCategory('Dessert');
 
       emit(
         RecipeLoaded(
@@ -66,6 +64,32 @@ class RecipeCubit extends Cubit<RecipeState> {
           recipes: recipes,
           recommendations: currentRecommendations,
           activeCategory: category,
+        ),
+      );
+    } catch (e) {
+      emit(RecipeError(e.toString()));
+    }
+  }
+
+  Future<void> filterByIngredient(String ingredient) async {
+    try {
+      List<Recipe> currentRecommendations = [];
+      if (state is RecipeLoaded) {
+        currentRecommendations = (state as RecipeLoaded).recommendations;
+      }
+
+      emit(RecipeLoading());
+      final recipes = await repository.getRecipesByIngredient(ingredient);
+
+      if (currentRecommendations.isEmpty) {
+        currentRecommendations = await repository.getRandomRecipes();
+      }
+
+      emit(
+        RecipeLoaded(
+          recipes: recipes,
+          recommendations: currentRecommendations,
+          activeCategory: 'Ingredient: $ingredient',
         ),
       );
     } catch (e) {
