@@ -22,9 +22,6 @@ class TranslationHelper {
   }) async {
     if (texts.isEmpty) return texts;
     try {
-      // Translating one by one might be slow, but safe.
-      // Ideally we would batch, but the package doesn't support batch well.
-      // We can run in parallel.
       final results = await Future.wait(
         texts.map((text) => translateText(text, to: to)),
       );

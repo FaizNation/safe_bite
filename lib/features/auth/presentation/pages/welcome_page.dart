@@ -3,110 +3,185 @@ import 'login_page.dart';
 import 'register_page.dart';
 
 class WelcomePage extends StatelessWidget {
-  const WelcomePage({Key? key}) : super(key: key);
+  const WelcomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFFF5E6D3), Color(0xFFFFFFFF)],
-          ),
-        ),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
+      backgroundColor: const Color(0xFFD4E7C5), // Light green background
+      body: Stack(
+        children: [
+          // Scrollable content to prevent overflow on small screens
+          SingleChildScrollView(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Text(
-                  'Selamat Datang\ndi Safe Bite',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF2D5016),
+                const SizedBox(height: 60), // Top padding
+                // Title
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                  child: RichText(
+                    textAlign: TextAlign.left,
+                    text: const TextSpan(
+                      style: TextStyle(
+                        fontFamily:
+                            'Plus Jakarta Sans', // Assuming font family, change if needed
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                        height: 1.2,
+                      ),
+                      children: [
+                        TextSpan(text: 'Selamat Datang\ndi '),
+                        TextSpan(
+                          text: 'Safe ',
+                          style: TextStyle(
+                            color: Color(0xFF2D5016),
+                          ), // Dark Green
+                        ),
+                        TextSpan(
+                          text: 'Bite',
+                          style: TextStyle(color: Color(0xFFE8A317)), // Orange
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                const SizedBox(height: 40),
+                const SizedBox(height: 20),
+                // Center Image
                 Image.asset(
-                  'assets/images/welcome_illustration.png',
-                  height: 250,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      height: 250,
-                      decoration: BoxDecoration(
-                        color: Colors.green.shade100,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: const Icon(
-                        Icons.food_bank,
-                        size: 100,
-                        color: Color(0xFF6B9F5E),
-                      ),
-                    );
-                  },
+                  'assets/images/welcome.png',
+                  height: 300,
+                  fit: BoxFit.contain,
                 ),
-                const SizedBox(height: 30),
-                const Text(
-                  'Mari bersama kurangi\nlimbah makanan dan jaga\nlingkungan!',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 16, color: Color(0xFF5D6D5B)),
-                ),
-                const SizedBox(height: 50),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const RegisterPage(),
+                const SizedBox(height: 20),
+                // Subtitle
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                  child: RichText(
+                    textAlign: TextAlign.center,
+                    text: const TextSpan(
+                      style: TextStyle(
+                        fontFamily: 'poppins',
+                        fontSize: 16,
+                        color: Colors.black,
+                        height: 1.5,
                       ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF6B9F5E),
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
+                      children: [
+                        TextSpan(text: 'Mari bersama kurangi\n'),
+                        TextSpan(
+                          text: 'limbah makanan',
+                          style: TextStyle(
+                            color: Color(0xFF4A6B3E), // Greenish
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        TextSpan(text: ' dan jaga lingkungan!'),
+                      ],
                     ),
                   ),
-                  child: const Text(
-                    'Daftar',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
                 ),
-                const SizedBox(height: 16),
-                OutlinedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const LoginPage(),
-                      ),
-                    );
-                  },
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xFF6B9F5E),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    side: const BorderSide(color: Color(0xFF6B9F5E)),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
+                const SizedBox(height: 200), // Space for bottom sheet
+              ],
+            ),
+          ),
+          // Bottom Section with Image and Buttons
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Stack(
+              alignment: Alignment.bottomCenter,
+              children: [
+                // Bottom Background Image
+                Image.asset(
+                  'assets/images/login_bottom.png',
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+                // Buttons
+                Padding(
+                  padding: const EdgeInsets.only(
+                    bottom: 40.0,
+                    left: 24.0,
+                    right: 24.0,
                   ),
-                  child: const Text(
-                    'Masuk',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Register Button
+                      SizedBox(
+                        width: double.infinity,
+                        height: 50,
+                        child: OutlinedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const RegisterPage(),
+                              ),
+                            );
+                          },
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(
+                              color: Color(0xFF4A6B3E),
+                              width: 1.5,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            backgroundColor: Colors.white,
+                          ),
+                          child: const Text(
+                            'Daftar',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      // Login Button
+                      SizedBox(
+                        width: double.infinity,
+                        height: 50,
+                        child: OutlinedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const LoginPage(),
+                              ),
+                            );
+                          },
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(
+                              color: Color(0xFF4A6B3E),
+                              width: 1.5,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            backgroundColor: Colors.white,
+                          ),
+                          child: const Text(
+                            'Masuk',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
           ),
-        ),
+        ],
       ),
     );
   }
