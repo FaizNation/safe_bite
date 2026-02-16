@@ -15,6 +15,7 @@ class FoodItemModel extends FoodItem {
     super.quantity = 1,
     super.boundingBox,
     super.expiryDate,
+    super.addedAt,
     super.imageUrl,
     super.imageBlob,
   });
@@ -37,6 +38,15 @@ class FoodItemModel extends FoodItem {
       }
     }
 
+    DateTime? addedAtDate;
+    if (json['added_at'] != null) {
+      if (json['added_at'] is Timestamp) {
+        addedAtDate = (json['added_at'] as Timestamp).toDate();
+      } else if (json['added_at'] is String) {
+        addedAtDate = DateTime.tryParse(json['added_at']);
+      }
+    }
+
     return FoodItemModel(
       foodName: json['food_name'] ?? 'Unknown',
       category: json['category'] ?? 'Other',
@@ -50,6 +60,7 @@ class FoodItemModel extends FoodItem {
       expiryDate: json['expiry_date'] != null
           ? DateTime.tryParse(json['expiry_date'])
           : null,
+      addedAt: addedAtDate,
       imageUrl: json['image_url'],
       imageBlob: blobBytes,
     );
@@ -67,6 +78,7 @@ class FoodItemModel extends FoodItem {
       'quantity': quantity,
       'box_2d': boundingBox,
       'expiry_date': expiryDate?.toIso8601String(),
+      'added_at': addedAt?.toIso8601String(),
       'image_url': imageUrl,
       'image_blob': imageBlob != null ? Blob(imageBlob!) : null,
     };

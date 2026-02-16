@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:safe_bite/features/home/presentation/pages/food_item_detail_page.dart';
 import 'package:safe_bite/features/scan/domain/entities/food_analysis.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -28,125 +29,148 @@ class ExpiringItemsList extends StatelessWidget {
       separatorBuilder: (context, index) => const SizedBox(height: 12),
       itemBuilder: (context, index) {
         final item = items[index];
-        final daysUntilExpiry = _calculateDaysUntilExpiry(item.expiryDate);
+        
+        // Calculate days from shelfLife if available, otherwise use expiryDate
+        int daysUntilExpiry;
+        if (item.shelfLife.isNotEmpty && item.shelfLife != 'Unknown') {
+          final parsedDays = _parseShelfLife(item.shelfLife);
+          if (parsedDays != null) {
+            daysUntilExpiry = parsedDays;
+          } else {
+            daysUntilExpiry = _calculateDaysUntilExpiry(item.expiryDate);
+          }
+        } else {
+          daysUntilExpiry = _calculateDaysUntilExpiry(item.expiryDate);
+        }
+
         final status = _getStatus(daysUntilExpiry);
         final statusColor = _getStatusColor(daysUntilExpiry);
 
-        return Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.1),
-                blurRadius: 6,
-                offset: const Offset(0, 2),
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => FoodItemDetailPage(item: item),
               ),
-            ],
-          ),
-          child: Row(
-            children: [
-              // Image
-              Container(
-                width: 80,
-                height: 80,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: Colors.grey.shade100,
-                  image: item.imageBlob != null
-                      ? DecorationImage(
-                          image: MemoryImage(item.imageBlob!),
-                          fit: BoxFit.cover,
-                        )
-                      : (item.imageUrl != null
-                          ? DecorationImage(
-                              image: NetworkImage(item.imageUrl!),
-                              fit: BoxFit.cover,
-                            )
-                          : null),
+            );
+          },
+          child: Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.1),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
                 ),
-                child: (item.imageBlob == null && item.imageUrl == null)
-                    ? const Icon(Icons.fastfood, color: Colors.grey)
-                    : null,
-              ),
-              const SizedBox(width: 16),
-              // Details
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      item.foodName,
-                      style: GoogleFonts.poppins(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+              ],
+            ),
+            child: Row(
+              children: [
+                // Image
+                Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: Colors.grey.shade100,
+                    image: item.imageBlob != null
+                        ? DecorationImage(
+                            image: MemoryImage(item.imageBlob!),
+                            fit: BoxFit.cover,
+                          )
+                        : (item.imageUrl != null
+                              ? DecorationImage(
+                                  image: NetworkImage(item.imageUrl!),
+                                  fit: BoxFit.cover,
+                                )
+                              : null),
+                  ),
+                  child: (item.imageBlob == null && item.imageUrl == null)
+                      ? const Icon(Icons.fastfood, color: Colors.grey)
+                      : null,
+                ),
+                const SizedBox(width: 16),
+                // Details
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        item.foodName,
+                        style: GoogleFonts.poppins(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      // Use shelfLife if available, otherwise calculate
-                      item.shelfLife.isNotEmpty && item.shelfLife != 'Unknown'
-                          ? item.shelfLife
-                          : _getExpiryText(daysUntilExpiry),
-                      style: GoogleFonts.poppins(
-                        fontSize: 14,
-                        color: statusColor,
-                        fontWeight: FontWeight.w500,
+                      const SizedBox(height: 4),
+                      Text(
+                        // Use shelfLife if available, otherwise calculate
+                        item.shelfLife.isNotEmpty && item.shelfLife != 'Unknown'
+                            ? item.shelfLife
+                            : _getExpiryText(daysUntilExpiry),
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          color: statusColor,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: statusColor.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.info_outline,
-                            color: statusColor,
-                            size: 16,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            status,
-                            style: GoogleFonts.poppins(
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: statusColor.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.info_outline,
                               color: statusColor,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
+                              size: 16,
                             ),
-                          ),
-                        ],
+                            const SizedBox(width: 4),
+                            Text(
+                              status,
+                              style: GoogleFonts.poppins(
+                                color: statusColor,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              // Quantity Badge
-              Container(
-                width: 32,
-                height: 32,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
-                  shape: BoxShape.circle,
-                ),
-                child: Text(
-                  '${item.quantity}x',
-                  style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                    fontSize: 12,
+                    ],
                   ),
                 ),
-              ),
-            ],
+                // Quantity Badge
+                Container(
+                  width: 32,
+                  height: 32,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade100,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Text(
+                    '${item.quantity}x',
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },
@@ -160,6 +184,32 @@ class ExpiringItemsList extends StatelessWidget {
     final today = DateTime(now.year, now.month, now.day);
     final expiry = DateTime(expiryDate.year, expiryDate.month, expiryDate.day);
     return expiry.difference(today).inDays;
+  }
+
+  int? _parseShelfLife(String shelfLife) {
+    try {
+      final lowerCase = shelfLife.toLowerCase();
+      final RegExp regex = RegExp(
+          r'(\d+)\s*(day|days|week|weeks|month|months|year|years|hari|minggu|bulan|tahun)');
+      final match = regex.firstMatch(lowerCase);
+
+      if (match != null) {
+        final value = int.parse(match.group(1)!);
+        final unit = match.group(2)!;
+
+        if (unit.contains('week') || unit.contains('minggu')) {
+          return value * 7;
+        } else if (unit.contains('month') || unit.contains('bulan')) {
+          return value * 30;
+        } else if (unit.contains('year') || unit.contains('tahun')) {
+          return value * 365;
+        }
+        return value; // days
+      }
+    } catch (e) {
+      // Ignore parsing errors
+    }
+    return null;
   }
 
   String _getExpiryText(int days) {
