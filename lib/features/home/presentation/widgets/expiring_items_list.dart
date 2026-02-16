@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:safe_bite/features/scan/domain/entities/food_analysis.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ExpiringItemsList extends StatelessWidget {
   final List<FoodItem> items;
@@ -9,10 +10,13 @@ class ExpiringItemsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (items.isEmpty) {
-      return const Center(
+      return Center(
         child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Text('Belum ada data bahan makanan.'),
+          padding: const EdgeInsets.all(16.0),
+          child: Text(
+            'Belum ada data bahan makanan.',
+            style: GoogleFonts.poppins(color: Colors.grey),
+          ),
         ),
       );
     }
@@ -50,14 +54,19 @@ class ExpiringItemsList extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
                   color: Colors.grey.shade100,
-                  image: item.imageUrl != null
+                  image: item.imageBlob != null
                       ? DecorationImage(
-                          image: NetworkImage(item.imageUrl!),
+                          image: MemoryImage(item.imageBlob!),
                           fit: BoxFit.cover,
                         )
-                      : null,
+                      : (item.imageUrl != null
+                          ? DecorationImage(
+                              image: NetworkImage(item.imageUrl!),
+                              fit: BoxFit.cover,
+                            )
+                          : null),
                 ),
-                child: item.imageUrl == null
+                child: (item.imageBlob == null && item.imageUrl == null)
                     ? const Icon(Icons.fastfood, color: Colors.grey)
                     : null,
               ),
@@ -69,17 +78,21 @@ class ExpiringItemsList extends StatelessWidget {
                   children: [
                     Text(
                       item.foodName,
-                      style: const TextStyle(
+                      style: GoogleFonts.poppins(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Exp : ${daysUntilExpiry} hari lagi',
-                      style: TextStyle(
+                      // Use shelfLife if available, otherwise calculate
+                      item.shelfLife.isNotEmpty && item.shelfLife != 'Unknown'
+                          ? item.shelfLife
+                          : _getExpiryText(daysUntilExpiry),
+                      style: GoogleFonts.poppins(
                         fontSize: 14,
-                        color: Colors.grey.shade600,
+                        color: statusColor,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -89,22 +102,22 @@ class ExpiringItemsList extends StatelessWidget {
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: statusColor,
+                        color: statusColor.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(
+                          Icon(
                             Icons.info_outline,
-                            color: Colors.white,
+                            color: statusColor,
                             size: 16,
                           ),
                           const SizedBox(width: 4),
                           Text(
                             status,
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: GoogleFonts.poppins(
+                              color: statusColor,
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
                             ),
@@ -117,18 +130,19 @@ class ExpiringItemsList extends StatelessWidget {
               ),
               // Quantity Badge
               Container(
-                width: 24,
-                height: 24,
+                width: 32,
+                height: 32,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade200,
+                  color: Colors.grey.shade100,
                   shape: BoxShape.circle,
                 ),
                 child: Text(
-                  '${item.quantity}',
-                  style: TextStyle(
+                  '${item.quantity}x',
+                  style: GoogleFonts.poppins(
                     fontWeight: FontWeight.bold,
-                    color: Colors.grey.shade600,
+                    color: Colors.black,
+                    fontSize: 12,
                   ),
                 ),
               ),
@@ -140,21 +154,31 @@ class ExpiringItemsList extends StatelessWidget {
   }
 
   int _calculateDaysUntilExpiry(DateTime? expiryDate) {
-    if (expiryDate == null) return 7; 
+    if (expiryDate == null) return 0;
     final now = DateTime.now();
-    final difference = expiryDate.difference(now);
-    return difference.inDays;
+    // Reset time components to compare dates only
+    final today = DateTime(now.year, now.month, now.day);
+    final expiry = DateTime(expiryDate.year, expiryDate.month, expiryDate.day);
+    return expiry.difference(today).inDays;
+  }
+
+  String _getExpiryText(int days) {
+    if (days < 0) return 'Sudah kadaluwarsa';
+    if (days == 0) return 'Kadaluwarsa hari ini';
+    return '$days hari lagi';
   }
 
   String _getStatus(int days) {
-    if (days <= 3) return 'segera habiskan !';
-    if (days <= 7) return 'hampir expired !';
-    return 'terdeteksi aman';
+    if (days < 0) return 'Kadaluwarsa';
+    if (days == 0) return 'Hari Ini!';
+    if (days <= 3) return 'Segera Habiskan!';
+    if (days <= 7) return 'Hampir Kadaluwarsa';
+    return 'Aman';
   }
 
   Color _getStatusColor(int days) {
-    if (days <= 3) return const Color(0xFFD32F2F); 
-    if (days <= 7) return const Color(0xFFFBC02D); 
-    return const Color(0xFF558B49); 
+    if (days <= 3) return const Color(0xFFD32F2F); // Red
+    if (days <= 7) return const Color(0xFFFBC02D); // Yellow
+    return const Color(0xFF558B49); // Green
   }
 }

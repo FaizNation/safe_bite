@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:safe_bite/features/auth/domain/entities/user_entity.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class HomeHeader extends StatelessWidget {
   final UserEntity? user;
@@ -19,15 +20,18 @@ class HomeHeader extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
                 image: DecorationImage(
-                  image: user?.photoUrl != null
-                      ? NetworkImage(user!.photoUrl!)
-                      : const AssetImage('assets/images/user_placeholder.png')
-                            as ImageProvider,
+                  image: user?.photoBlob != null
+                      ? MemoryImage(user!.photoBlob!)
+                      : (user?.photoUrl != null
+                            ? NetworkImage(user!.photoUrl!)
+                            : const AssetImage(
+                                    'assets/images/user_placeholder.png',
+                                  )
+                                  as ImageProvider),
                   fit: BoxFit.cover,
                 ),
                 color: Colors.grey.shade300,
               ),
-              
               child: user?.photoUrl == null
                   ? const Icon(Icons.person, color: Colors.grey)
                   : null,
@@ -36,10 +40,10 @@ class HomeHeader extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Selamat datang',
-                  style: TextStyle(
-                    fontSize: 16,
+                  style: GoogleFonts.poppins(
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),
@@ -55,9 +59,9 @@ class HomeHeader extends StatelessWidget {
                   ),
                   child: Text(
                     user?.name ?? 'User',
-                    style: const TextStyle(
+                    style: GoogleFonts.poppins(
                       fontSize: 14,
-                      color: Color(0xFF558B49),
+                      color: const Color(0xFF558B49),
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -65,10 +69,6 @@ class HomeHeader extends StatelessWidget {
               ],
             ),
           ],
-        ),
-        IconButton(
-          onPressed: () {},
-          icon: const Icon(Icons.notifications_none, size: 28),
         ),
       ],
     );

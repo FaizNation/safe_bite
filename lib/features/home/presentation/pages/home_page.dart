@@ -4,10 +4,11 @@ import 'package:safe_bite/features/home/presentation/widgets/category_list.dart'
 import 'package:safe_bite/features/home/presentation/widgets/expiring_items_list.dart';
 import 'package:safe_bite/features/home/presentation/widgets/home_header.dart';
 import 'package:safe_bite/features/home/presentation/widgets/stats_card.dart';
+
 import '../../data/repositories/home_repository_impl.dart';
 import '../cubit/home_cubit.dart';
 import '../cubit/home_state.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -27,7 +28,7 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, 
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () async {
@@ -44,20 +45,46 @@ class HomeView extends StatelessWidget {
                 } else if (state is HomeError) {
                   return Center(child: Text('Error: ${state.message}'));
                 } else if (state is HomeLoaded) {
-                  // Calculate stats
+                  // Filter items based on category
+                  final filteredItems = state.selectedCategory == 'all'
+                      ? state.expiringItems
+                      : state.expiringItems.where((item) {
+                          final category = item.category.toLowerCase();
+                          final selected = state.selectedCategory.toLowerCase();
+
+                          if (selected == 'vegetables') {
+                            return category.contains('vegetable') ||
+                                category.contains('sayur');
+                          }
+                          if (selected == 'fruits') {
+                            return category.contains('fruit') ||
+                                category.contains('buah');
+                          }
+                          if (selected == 'meat') {
+                            return category.contains('meat') ||
+                                category.contains('daging') ||
+                                category.contains('chicken') ||
+                                category.contains('ayam') ||
+                                category.contains('fish') ||
+                                category.contains('ikan');
+                          }
+                          if (selected == 'milk') {
+                            return category.contains('milk') ||
+                                category.contains('susu') ||
+                                category.contains('dairy');
+                          }
+
+                          return category == selected;
+                        }).toList();
+
+                  // Calculate stats (based on all items or filtered? usually all for stats)
                   final expiringCount = state.expiringItems
                       .where(
                         (item) =>
-                            (item.expiryDate
-                                    ?.difference(DateTime.now())
-                                    .inDays ??
-                                7) <=
-                            3,
+                            _calculateDaysUntilExpiry(item.expiryDate) <= 3,
                       )
                       .length;
-                  final savedCount = state
-                      .expiringItems
-                      .length; 
+                  final savedCount = state.expiringItems.length;
 
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,18 +96,23 @@ class HomeView extends StatelessWidget {
                         savedCount: savedCount,
                       ),
                       const SizedBox(height: 24),
-                      const CategoryList(),
+                      CategoryList(
+                        selectedCategory: state.selectedCategory,
+                        onCategorySelected: (category) {
+                          context.read<HomeCubit>().selectCategory(category);
+                        },
+                      ),
                       const SizedBox(height: 24),
-                      const Text(
+                      Text(
                         'Daftar Bahan Mendekati Kadaluwarsa',
-                        style: TextStyle(
+                        style: GoogleFonts.poppins(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       const SizedBox(height: 16),
-                      ExpiringItemsList(items: state.expiringItems),
-                      const SizedBox(height: 80), 
+                      ExpiringItemsList(items: filteredItems),
+                      const SizedBox(height: 80),
                     ],
                   );
                 }
@@ -91,5 +123,13 @@ class HomeView extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  int _calculateDaysUntilExpiry(DateTime? expiryDate) {
+    if (expiryDate == null) return 0;
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final expiry = DateTime(expiryDate.year, expiryDate.month, expiryDate.day);
+    return expiry.difference(today).inDays;
   }
 }

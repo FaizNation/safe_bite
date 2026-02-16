@@ -1,9 +1,11 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:image/image.dart' as img;
 import '../../domain/entities/food_analysis.dart';
 import '../../domain/repositories/scan_repository.dart';
 import '../models/food_analysis_model.dart';
@@ -35,10 +37,11 @@ Format:
       "quantity": int (count of identical items),
       "box_2d": [ymin, xmin, ymax, xmax] (int, 0-1000 scale, bounding box of the whole group),
       "freshness_level": "String (Segar/Layak/Busuk)",
-      "shelf_life": "String (e.g. '3-4 days in fridge')",
+      "shelf_life": "String (e.g. '3 days', '1 week') - Short duration only.",
       "storage_advice": "String",
       "calories_approx": int,
-      "recipe_idea": "String"
+      "recipe_idea": "String",
+      "expiry_date": "String (ISO 8601 Date, e.g. '2023-12-31') - Calculate based on shelf_life from today."
     }
   ]
 }
@@ -70,7 +73,7 @@ Group identical items into one entry and count them in 'quantity'.
     XFile? imageFile,
   ) async {
     final firestore = FirebaseFirestore.instance;
-    
+
     final batch = firestore.batch();
     final collection = firestore
         .collection('users')
@@ -79,28 +82,23 @@ Group identical items into one entry and count them in 'quantity'.
 
     String? uploadedImageUrl;
 
-    // // CHECK: Skipping Image Upload for Debugging
-    // if (imageFile != null) {
-    //   try {
-    //     debugPrint('Starting Image Upload...');
-    //     final ref = storage
-    //         .ref()
-    //         .child('users')
-    //         .child(userId)
-    //         .child('scans')
-    //         .child('${DateTime.now().millisecondsSinceEpoch}.jpg');
-
-    //     if (kIsWeb) {
-    //       await ref.putData(await imageFile.readAsBytes());
-    //     } else {
-    //       await ref.putFile(File(imageFile.path));
-    //     }
-    //     uploadedImageUrl = await ref.getDownloadURL();
-    //     debugPrint('Image Upload Success: $uploadedImageUrl');
-    //   } catch (e) {
-    //     debugPrint('Image upload failed: $e');
-    //   }
-    // }
+    // Process image for blob storage
+    Uint8List? imageBlob;
+    if (imageFile != null) {
+      try {
+        final bytes = await imageFile.readAsBytes();
+        // Resize and compress to ensure it fits in Firestore document (1MB limit)
+        final image = img.decodeImage(bytes);
+        if (image != null) {
+          // Resize to width 600 (maintain aspect ratio)
+          final resized = img.copyResize(image, width: 600);
+          // Encode to JPEG with quality 70
+          imageBlob = Uint8List.fromList(img.encodeJpg(resized, quality: 70));
+        }
+      } catch (e) {
+        debugPrint('Error processing image for Firestore blob: $e');
+      }
+    }
 
     // DEBUG: Write to a test collection to verify connection
     try {
@@ -112,7 +110,6 @@ Group identical items into one entry and count them in 'quantity'.
       debugPrint('DEBUG WRITE SUCCESS: Written to debug_writes');
     } catch (e) {
       debugPrint('DEBUG WRITE FAILED: $e');
-      // Don't throw, let's try the real write
     }
 
     debugPrint('Start saving ${analysis.items.length} items for $userId');
@@ -127,7 +124,6 @@ Group identical items into one entry and count them in 'quantity'.
         'Platform check: kIsWeb=$kIsWeb, OperatingSystem=${Platform.operatingSystem}',
       );
     } catch (e) {
-      // Platform.operatingSystem might throw on web
       debugPrint('Platform check: kIsWeb=$kIsWeb');
     }
 
@@ -145,6 +141,7 @@ Group identical items into one entry and count them in 'quantity'.
         'quantity': item.quantity,
         'expiry_date': item.expiryDate?.toIso8601String(),
         'image_url': uploadedImageUrl ?? item.imageUrl,
+        'image_blob': imageBlob != null ? Blob(imageBlob) : null,
         'added_at': FieldValue.serverTimestamp(),
       };
 

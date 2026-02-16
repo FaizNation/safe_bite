@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:typed_data';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../domain/entities/food_analysis.dart';
 
 class FoodItemModel extends FoodItem {
@@ -14,12 +16,25 @@ class FoodItemModel extends FoodItem {
     super.boundingBox,
     super.expiryDate,
     super.imageUrl,
+    super.imageBlob,
   });
 
   factory FoodItemModel.fromJson(Map<String, dynamic> json) {
     List<int>? box;
     if (json['box_2d'] != null) {
       box = List<int>.from(json['box_2d']);
+    }
+
+    Uint8List? blobBytes;
+    if (json['image_blob'] != null) {
+      if (json['image_blob'] is Blob) {
+        blobBytes = (json['image_blob'] as Blob).bytes;
+      } else if (json['image_blob'] is String) {
+        // Handle base64 string if ever stored that way
+        try {
+          blobBytes = base64Decode(json['image_blob']);
+        } catch (_) {}
+      }
     }
 
     return FoodItemModel(
@@ -36,6 +51,7 @@ class FoodItemModel extends FoodItem {
           ? DateTime.tryParse(json['expiry_date'])
           : null,
       imageUrl: json['image_url'],
+      imageBlob: blobBytes,
     );
   }
 
@@ -52,6 +68,7 @@ class FoodItemModel extends FoodItem {
       'box_2d': boundingBox,
       'expiry_date': expiryDate?.toIso8601String(),
       'image_url': imageUrl,
+      'image_blob': imageBlob != null ? Blob(imageBlob!) : null,
     };
   }
 }
