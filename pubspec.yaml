@@ -87,6 +87,10 @@ flutter:
     - assets/images/login_bottom.png
     - assets/images/welcome.png
     - assets/images/auth_bottom.png
+    - assets/images/resep_top.png
+    - assets/images/stats_top.png
+    - assets/images/banner_resep_kiri.png
+    - assets/images/banner_resep_kanan.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

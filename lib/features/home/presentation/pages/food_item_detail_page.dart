@@ -1,12 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:safe_bite/features/resep/data/datasources/recipe_remote_datasource.dart';
+import 'package:safe_bite/features/resep/data/repositories/recipe_repository_impl.dart';
+import 'package:safe_bite/features/resep/presentation/cubit/recipe_cubit.dart';
+import 'package:safe_bite/features/resep/presentation/cubit/recipe_state.dart';
+import 'package:safe_bite/features/resep/presentation/pages/recipe_detail_page.dart';
 import 'package:safe_bite/features/scan/domain/entities/food_analysis.dart';
 
 class FoodItemDetailPage extends StatelessWidget {
   final FoodItem item;
 
   const FoodItemDetailPage({super.key, required this.item});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => RecipeCubit(
+        RecipeRepositoryImpl(remoteDataSource: RecipeRemoteDataSourceImpl()),
+      )..filterByIngredient(item.foodName),
+      child: FoodItemDetailView(item: item),
+    );
+  }
+}
+
+class FoodItemDetailView extends StatelessWidget {
+  final FoodItem item;
+
+  const FoodItemDetailView({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +40,7 @@ class FoodItemDetailPage extends StatelessWidget {
             expandedHeight: 300,
             pinned: true,
             backgroundColor: const Color(0xFF558B49),
+            
             flexibleSpace: FlexibleSpaceBar(
               background: item.imageBlob != null
                   ? Image.memory(
@@ -38,9 +61,19 @@ class FoodItemDetailPage extends StatelessWidget {
                           ),
                         )),
             ),
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-              onPressed: () => Navigator.pop(context),
+            leading: Container(
+              margin: const EdgeInsets.all(8),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+              ),
+              child: IconButton(
+                icon: const Icon(
+                  Icons.arrow_back,
+                  color: Color(0xFF558B49),
+                ),
+                onPressed: () => Navigator.pop(context),
+              ),
             ),
           ),
           SliverToBoxAdapter(
@@ -164,11 +197,136 @@ class FoodItemDetailPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 40),
+                  Text(
+                    'Rekomendasi Resep',
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: const Color(0xFF1E1E1E),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  BlocBuilder<RecipeCubit, RecipeState>(
+                    builder: (context, state) {
+                      if (state is RecipeLoading) {
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            color: Color(0xFF558B49),
+                          ),
+                        );
+                      } else if (state is RecipeError) {
+                        return Center(
+                          child: Text(
+                            'Failed to load recipes',
+                            style: GoogleFonts.poppins(color: Colors.red),
+                          ),
+                        );
+                      } else if (state is RecipeLoaded) {
+                        if (state.recipes.isEmpty) {
+                          return Center(
+                            child: Text(
+                              'No recipes found for ${item.foodName}',
+                              style: GoogleFonts.poppins(
+                                color: Colors.grey,
+                              ),
+                            ),
+                          );
+                        }
+                        return SizedBox(
+                          height: 180,
+                          child: ListView.separated(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: state.recipes.length,
+                            separatorBuilder: (context, index) =>
+                                const SizedBox(width: 16),
+                            itemBuilder: (context, index) {
+                              final recipe = state.recipes[index];
+                              return _buildRecommendationCard(context, recipe);
+                            },
+                          ),
+                        );
+                      }
+                      return const SizedBox();
+                    },
+                  ),
+                  const SizedBox(height: 40),
                 ],
               ),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildRecommendationCard(BuildContext context, dynamic recipe) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => RecipeDetailPage(recipeId: recipe.id),
+          ),
+        );
+      },
+      child: Container(
+        width: 140,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1),
+              blurRadius: 6,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(12)),
+              child: Image.network(
+                recipe.thumbUrl,
+                height: 100,
+                width: 140,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Container(
+                  height: 100,
+                  color: Colors.grey[200],
+                  child: const Icon(Icons.error),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    recipe.name,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.poppins(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '${recipe.timeMinutes} menit',
+                    style: GoogleFonts.poppins(
+                      fontSize: 10,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
