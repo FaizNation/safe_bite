@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:typed_data';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:safe_bite/features/auth/domain/entities/user_entity.dart';
 import 'package:safe_bite/features/home/domain/repositories/home_repository.dart';
@@ -12,16 +13,38 @@ class HomeRepositoryImpl implements HomeRepository {
   HomeRepositoryImpl({FirebaseAuth? firebaseAuth, FirebaseFirestore? firestore})
     : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
       _firestore = firestore ?? FirebaseFirestore.instance;
-  
+
   @override
   Future<UserEntity?> getUserProfile() async {
     final user = _firebaseAuth.currentUser;
     if (user != null) {
+      Uint8List? photoBlob;
+      try {
+        final userDoc = await _firestore
+            .collection('users')
+            .doc(user.uid)
+            .get();
+        if (userDoc.exists && userDoc.data() != null) {
+          final data = userDoc.data()!;
+          if (data.containsKey('profile_photo_blob')) {
+            final blob = data['profile_photo_blob'];
+            if (blob is Blob) {
+              photoBlob = blob.bytes;
+            } else if (blob is String) {
+
+            }
+          }
+        }
+      } catch (e) {
+        print('Error fetching user profile blob: $e');
+      }
+
       return UserEntity(
         uid: user.uid,
         email: user.email!,
         name: user.displayName,
         photoUrl: user.photoURL,
+        photoBlob: photoBlob,
       );
     }
     return null;
@@ -34,8 +57,6 @@ class HomeRepositoryImpl implements HomeRepository {
           .collection('users')
           .doc(userId)
           .collection('food_items')
-          // .orderBy('expiry_date') 
-          // .limit(10) 
           .get();
 
       return snapshot.docs.map((doc) {

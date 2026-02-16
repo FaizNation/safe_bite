@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'dart:typed_data';
 
 class FoodItem extends Equatable {
   final String foodName;
@@ -11,7 +12,9 @@ class FoodItem extends Equatable {
   final int quantity;
   final List<int>? boundingBox;
   final DateTime? expiryDate;
+  final DateTime? addedAt;
   final String? imageUrl;
+  final Uint8List? imageBlob;
 
   const FoodItem({
     required this.foodName,
@@ -24,7 +27,9 @@ class FoodItem extends Equatable {
     this.quantity = 1,
     this.boundingBox,
     this.expiryDate,
+    this.addedAt,
     this.imageUrl,
+    this.imageBlob,
   });
 
   @override
@@ -38,7 +43,9 @@ class FoodItem extends Equatable {
     recipeIdea,
     boundingBox,
     expiryDate,
+    addedAt,
     imageUrl,
+    imageBlob,
   ];
 }
 

@@ -15,11 +15,28 @@ class HomeLoading extends HomeState {}
 class HomeLoaded extends HomeState {
   final UserEntity? user;
   final List<FoodItem> expiringItems;
+  final String selectedCategory;
 
-  const HomeLoaded({this.user, required this.expiringItems});
+  const HomeLoaded({
+    this.user,
+    required this.expiringItems,
+    this.selectedCategory = 'all',
+  });
 
   @override
-  List<Object?> get props => [user, expiringItems];
+  List<Object?> get props => [user, expiringItems, selectedCategory];
+
+  HomeLoaded copyWith({
+    UserEntity? user,
+    List<FoodItem>? expiringItems,
+    String? selectedCategory,
+  }) {
+    return HomeLoaded(
+      user: user ?? this.user,
+      expiringItems: expiringItems ?? this.expiringItems,
+      selectedCategory: selectedCategory ?? this.selectedCategory,
+    );
+  }
 }
 
 class HomeError extends HomeState {

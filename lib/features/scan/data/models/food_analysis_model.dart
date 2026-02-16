@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:typed_data';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../domain/entities/food_analysis.dart';
 
 class FoodItemModel extends FoodItem {
@@ -13,13 +15,36 @@ class FoodItemModel extends FoodItem {
     super.quantity = 1,
     super.boundingBox,
     super.expiryDate,
+    super.addedAt,
     super.imageUrl,
+    super.imageBlob,
   });
 
   factory FoodItemModel.fromJson(Map<String, dynamic> json) {
     List<int>? box;
     if (json['box_2d'] != null) {
       box = List<int>.from(json['box_2d']);
+    }
+
+    Uint8List? blobBytes;
+    if (json['image_blob'] != null) {
+      if (json['image_blob'] is Blob) {
+        blobBytes = (json['image_blob'] as Blob).bytes;
+      } else if (json['image_blob'] is String) {
+        // Handle base64 string if ever stored that way
+        try {
+          blobBytes = base64Decode(json['image_blob']);
+        } catch (_) {}
+      }
+    }
+
+    DateTime? addedAtDate;
+    if (json['added_at'] != null) {
+      if (json['added_at'] is Timestamp) {
+        addedAtDate = (json['added_at'] as Timestamp).toDate();
+      } else if (json['added_at'] is String) {
+        addedAtDate = DateTime.tryParse(json['added_at']);
+      }
     }
 
     return FoodItemModel(
@@ -35,7 +60,9 @@ class FoodItemModel extends FoodItem {
       expiryDate: json['expiry_date'] != null
           ? DateTime.tryParse(json['expiry_date'])
           : null,
+      addedAt: addedAtDate,
       imageUrl: json['image_url'],
+      imageBlob: blobBytes,
     );
   }
 
@@ -51,7 +78,9 @@ class FoodItemModel extends FoodItem {
       'quantity': quantity,
       'box_2d': boundingBox,
       'expiry_date': expiryDate?.toIso8601String(),
+      'added_at': addedAt?.toIso8601String(),
       'image_url': imageUrl,
+      'image_blob': imageBlob != null ? Blob(imageBlob!) : null,
     };
   }
 }
@@ -74,9 +103,6 @@ class FoodAnalysisModel extends FoodAnalysis {
           .map((i) => FoodItemModel.fromJson(i))
           .toList();
     } else {
-      // Fallback for single item legacy response (if any pipeline still sends it)
-      // OR properly handle if 'items' is missing but top level fields exist (unlikely with new prompt)
-      // But for safety, if keys exist at top level, wrap in one item.
       if (json.containsKey('food_name')) {
         items.add(FoodItemModel.fromJson(json));
       }

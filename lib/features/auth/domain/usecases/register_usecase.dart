@@ -1,5 +1,5 @@
-import '../entities/user_entity.dart';
-import '../repositories/auth_repository.dart';
+import 'package:safe_bite/features/auth/domain/entities/user_entity.dart';
+import 'package:safe_bite/features/auth/domain/repositories/auth_repository.dart';
 
 class RegisterUseCase {
   final AuthRepository repository;

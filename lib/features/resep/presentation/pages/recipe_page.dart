@@ -74,48 +74,79 @@ class _RecipeViewState extends State<RecipeView> {
   }
 
   Widget _buildHeader(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-      decoration: const BoxDecoration(color: Colors.white),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Resep',
-            style: TextStyle(
-              fontSize: 32,
-              fontWeight: FontWeight.w800,
-              color: Color(0xFF1E1E1E),
-              letterSpacing: -0.5,
+    return Stack(
+      children: [
+        Positioned(
+          top: 130,
+          left: 0,
+          right: 0,
+          child: Image.asset('assets/images/resep_top.png', fit: BoxFit.cover),
+        ),
+        Positioned.fill(
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  const Color(
+                    0xFFE8F5E9,
+                  ).withValues(alpha: 0.8), 
+                  Colors.white.withValues(alpha: 0.0), 
+                  Colors.white, 
+                ],
+                stops: const [0.0, 0.6, 1.0],
+              ),
             ),
           ),
-          const SizedBox(height: 8),
-          Text(
-            'Mau masak apa hari ini?',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey.shade600,
-              fontWeight: FontWeight.w500,
-            ),
+        ),
+        // Content
+        Container(
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(
+                height: 20,
+              ), 
+              const Text(
+                'Resep',
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.w800,
+                  color: Color(0xFF1E1E1E),
+                  letterSpacing: -0.5,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Mau masak apa hari ini?',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey.shade600,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(
+                height: 70,
+              ), 
+              // Search Bar
+              RecipeSearchBar(
+                onChanged: (query) {
+                  if (query.length > 2) {
+                    context.read<RecipeCubit>().searchRecipes(query);
+                  } else if (query.isEmpty) {
+                    context.read<RecipeCubit>().loadInitialData();
+                  }
+                },
+                onFilterTap: () {
+                  _showFilterDialog(context);
+                },
+              ),
+            ],
           ),
-          const SizedBox(height: 16),
-          // Search Bar
-          RecipeSearchBar(
-            // We need to check exact filename usage
-            onChanged: (query) {
-              // Debounce could be added here
-              if (query.length > 2) {
-                context.read<RecipeCubit>().searchRecipes(query);
-              } else if (query.isEmpty) {
-                context.read<RecipeCubit>().loadInitialData();
-              }
-            },
-            onFilterTap: () {
-              _showFilterDialog(context);
-            },
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -178,17 +209,50 @@ class _RecipeViewState extends State<RecipeView> {
   Widget _buildBanner() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(16),
+      height: 90, 
       decoration: BoxDecoration(
         color: const Color(0xFFE8F5E9),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: const Color(0xFFC8E6C9)),
       ),
-      child: Row(
+      child: Stack(
         children: [
-          Expanded(
+          // Left Image
+          Positioned(
+            left: 0,
+            top: 0,
+            bottom: 0,
+            child: ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(12),
+                bottomLeft: Radius.circular(12),
+              ),
+              child: Image.asset(
+                'assets/images/banner_resep_kiri.png',
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          // Right Image
+          Positioned(
+            right: 0,
+            top: 0,
+            bottom: 0,
+            child: ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topRight: Radius.circular(12),
+                bottomRight: Radius.circular(12),
+              ),
+              child: Image.asset(
+                'assets/images/banner_resep_kanan.png',
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          // Centered Text
+          Center(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text(
                   'Bahan mendekati basi?',
@@ -209,7 +273,6 @@ class _RecipeViewState extends State<RecipeView> {
               ],
             ),
           ),
-          const Icon(Icons.restaurant, color: Colors.green, size: 30),
         ],
       ),
     );
@@ -274,7 +337,6 @@ class _RecipeViewState extends State<RecipeView> {
   }
 
   void _showFilterDialog(BuildContext context) {
-    // Capture the cubit from the parent context before showing the modal
     final cubit = context.read<RecipeCubit>();
 
     showDialog(

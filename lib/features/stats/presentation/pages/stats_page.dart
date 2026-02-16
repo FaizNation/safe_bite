@@ -32,11 +32,82 @@ class StatsView extends StatelessWidget {
       backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header
+              // Custom Header with Image
+              _buildHeader(userName),
+
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Column(
+                  children: [
+                    // Time Toggle
+                    BlocBuilder<StatsCubit, StatsState>(
+                      builder: (context, state) {
+                        TimeRange currentRange = TimeRange.bulan;
+                        if (state is StatsLoaded) {
+                          currentRange = state.timeRange;
+                        }
+                        return _buildTimeToggle(context, currentRange);
+                      },
+                    ),
+                    const SizedBox(height: 32),
+
+                    // Chart Area
+                    BlocBuilder<StatsCubit, StatsState>(
+                      builder: (context, state) {
+                        if (state is StatsLoading) {
+                          return const SizedBox(
+                            height: 200,
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                color: Color(0xFF558B49),
+                              ),
+                            ),
+                          );
+                        } else if (state is StatsError) {
+                          return Center(child: Text('Error: ${state.message}'));
+                        } else if (state is StatsLoaded) {
+                          return Column(
+                            children: [
+                              DonutChartWidget(items: state.items),
+                              const SizedBox(height: 32),
+                              StatsLegendWidget(items: state.items),
+                            ],
+                          );
+                        }
+                        return const SizedBox.shrink();
+                      },
+                    ),
+
+                    const SizedBox(height: 30), // Bottom padding
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeader(String userName) {
+    return Stack(
+      children: [
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          child: Image.asset('assets/images/stats_top.png', fit: BoxFit.cover),
+        ),
+        Container(
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 30),
+          width: double.infinity,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 10),
               Text(
                 'Hai, $userName',
                 style: const TextStyle(
@@ -50,51 +121,10 @@ class StatsView extends StatelessWidget {
                 style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
               ),
               const SizedBox(height: 24),
-
-              // Time Toggle
-              BlocBuilder<StatsCubit, StatsState>(
-                builder: (context, state) {
-                  TimeRange currentRange = TimeRange.bulan;
-                  if (state is StatsLoaded) {
-                    currentRange = state.timeRange;
-                  }
-                  return _buildTimeToggle(context, currentRange);
-                },
-              ),
-              const SizedBox(height: 32),
-
-              // Chart Area
-              BlocBuilder<StatsCubit, StatsState>(
-                builder: (context, state) {
-                  if (state is StatsLoading) {
-                    return const SizedBox(
-                      height: 200,
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          color: Color(0xFF558B49),
-                        ),
-                      ),
-                    );
-                  } else if (state is StatsError) {
-                    return Center(child: Text('Error: ${state.message}'));
-                  } else if (state is StatsLoaded) {
-                    return Column(
-                      children: [
-                        DonutChartWidget(items: state.items),
-                        const SizedBox(height: 32),
-                        StatsLegendWidget(items: state.items),
-                      ],
-                    );
-                  }
-                  return const SizedBox.shrink();
-                },
-              ),
-
-              const SizedBox(height: 30), // Bottom padding
             ],
           ),
         ),
-      ),
+      ],
     );
   }
 

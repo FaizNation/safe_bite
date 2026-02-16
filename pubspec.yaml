@@ -51,6 +51,11 @@ dependencies:
   cached_network_image: ^3.4.1
   fl_chart: ^1.1.1
   translator: ^1.0.4+1
+  google_fonts: ^8.0.1
+  google_mlkit_object_detection: ^0.15.1
+  image: ^4.7.2
+  intl: ^0.20.2
+  flutter_launcher_icons: ^0.14.4
 
 dev_dependencies:
   flutter_test:
@@ -82,6 +87,12 @@ flutter:
     - assets/images/splash_bottom.png
     - assets/images/login_bottom.png
     - assets/images/welcome.png
+    - assets/images/auth_bottom.png
+    - assets/images/resep_top.png
+    - assets/images/stats_top.png
+    - assets/images/banner_resep_kiri.png
+    - assets/images/banner_resep_kanan.png
+    - assets/icon/icon_apps.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
@@ -108,3 +119,21 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon/icon_apps.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+  web:
+    generate: true
+    image_path: "path/to/image.png"
+    background_color: "#hexcode"
+    theme_color: "#hexcode"
+  windows:
+    generate: true
+    image_path: "path/to/image.png"
+    icon_size: 48 # min:48, max:256, default: 48
+  macos:
+    generate: true
+    image_path: "path/to/image.png"

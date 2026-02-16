@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:safe_bite/features/profile/presentation/bloc/profile_cubit.dart';
 import 'package:safe_bite/features/profile/presentation/bloc/profile_state.dart';
