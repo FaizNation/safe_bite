@@ -51,6 +51,7 @@ dependencies:
   cached_network_image: ^3.4.1
   fl_chart: ^1.1.1
   translator: ^1.0.4+1
+  google_fonts: ^8.0.1
 
 dev_dependencies:
   flutter_test:
@@ -82,6 +83,7 @@ flutter:
     - assets/images/splash_bottom.png
     - assets/images/login_bottom.png
     - assets/images/welcome.png
+    - assets/images/auth_bottom.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
