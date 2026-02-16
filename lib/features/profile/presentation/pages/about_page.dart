@@ -33,16 +33,16 @@ class AboutPage extends StatelessWidget {
               'Safe Bite adalah aplikasi yang membantu Anda mengelola bahan makanan, melacak tanggal kadaluarsa, dan mengurangi limbah makanan. Kami berkomitmen untuk mendukung gaya hidup berkelanjutan.',
               style: TextStyle(fontSize: 16),
             ),
-            SizedBox(height: 20),
-            Text(
-              'Tim Pengembang',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 10),
-            Text(
-              '- Fadly Faiz Fajarruddin\n- Dkk',
-              style: TextStyle(fontSize: 16),
-            ),
+            // SizedBox(height: 20),
+            // Text(
+            //   'Tim Pengembang',
+            //   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            // ),
+            // SizedBox(height: 10),
+            // Text(
+            //   '- Fadly Faiz Fajarruddin\n- Dkk',
+            //   style: TextStyle(fontSize: 16),
+            // ),
           ],
         ),
       ),

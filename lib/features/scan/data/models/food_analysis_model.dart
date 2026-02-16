@@ -103,9 +103,6 @@ class FoodAnalysisModel extends FoodAnalysis {
           .map((i) => FoodItemModel.fromJson(i))
           .toList();
     } else {
-      // Fallback for single item legacy response (if any pipeline still sends it)
-      // OR properly handle if 'items' is missing but top level fields exist (unlikely with new prompt)
-      // But for safety, if keys exist at top level, wrap in one item.
       if (json.containsKey('food_name')) {
         items.add(FoodItemModel.fromJson(json));
       }

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:safe_bite/core/widgets/social_button.dart';
-import '../../../main/presentation/pages/main_page.dart';
-import '../cubit/auth_cubit.dart';
-import '../cubit/auth_state.dart';
+import 'package:safe_bite/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:safe_bite/features/auth/presentation/cubit/auth_state.dart';
+import 'package:safe_bite/features/main/presentation/pages/main_page.dart';
 import 'login_page.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -250,48 +249,48 @@ class _RegisterPageState extends State<RegisterPage> {
                                 ),
                               ),
                               const SizedBox(height: 24),
-                              Row(
-                                children: [
-                                  const Expanded(child: Divider()),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 16,
-                                    ),
-                                    child: Text(
-                                      'Atau daftar dengan',
-                                      style: GoogleFonts.poppins(
-                                        color: const Color(0xFF8D8D8D),
-                                      ),
-                                    ),
-                                  ),
-                                  const Expanded(child: Divider()),
-                                ],
-                              ),
-                              const SizedBox(height: 24),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SocialButton(
-                                    icon: Icons.g_mobiledata,
-                                    size: 32,
-                                    onPressed: () {},
-                                  ),
-                                  const SizedBox(width: 16),
-                                  SocialButton(
-                                    icon: Icons.facebook,
-                                    size: 32,
-                                    iconColor: Colors.blue,
-                                    onPressed: () {},
-                                  ),
-                                  const SizedBox(width: 16),
-                                  SocialButton(
-                                    icon: Icons.apple,
-                                    size: 32,
-                                    onPressed: () {},
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 24),
+                              // Row(
+                              //   children: [
+                              //     const Expanded(child: Divider()),
+                              //     Padding(
+                              //       padding: const EdgeInsets.symmetric(
+                              //         horizontal: 16,
+                              //       ),
+                              //       child: Text(
+                              //         'Atau daftar dengan',
+                              //         style: GoogleFonts.poppins(
+                              //           color: const Color(0xFF8D8D8D),
+                              //         ),
+                              //       ),
+                              //     ),
+                              //     const Expanded(child: Divider()),
+                              //   ],
+                              // ),
+                              // const SizedBox(height: 24),
+                              // Row(
+                              //   mainAxisAlignment: MainAxisAlignment.center,
+                              //   children: [
+                              //     SocialButton(
+                              //       icon: Icons.g_mobiledata,
+                              //       size: 32,
+                              //       onPressed: () {},
+                              //     ),
+                              //     const SizedBox(width: 16),
+                              //     SocialButton(
+                              //       icon: Icons.facebook,
+                              //       size: 32,
+                              //       iconColor: Colors.blue,
+                              //       onPressed: () {},
+                              //     ),
+                              //     const SizedBox(width: 16),
+                              //     SocialButton(
+                              //       icon: Icons.apple,
+                              //       size: 32,
+                              //       onPressed: () {},
+                              //     ),
+                              //   ],
+                              // ),
+                              // const SizedBox(height: 24),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -321,7 +320,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 20), // Bottom padding
+                              const SizedBox(height: 20),
                             ],
                           ),
                         ),

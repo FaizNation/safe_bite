@@ -33,17 +33,17 @@ class HelpSupportPage extends StatelessWidget {
               'Jika Anda mengalami masalah atau memiliki pertanyaan, silakan hubungi tim dukungan kami.',
               style: TextStyle(fontSize: 16),
             ),
-            SizedBox(height: 20),
-            ListTile(
-              leading: Icon(Icons.email_outlined),
-              title: Text('Email'),
-              subtitle: Text('support@safebite.com'),
-            ),
-            ListTile(
-              leading: Icon(Icons.phone_outlined),
-              title: Text('Telepon'),
-              subtitle: Text('+62 812 3456 7890'),
-            ),
+            // SizedBox(height: 20),
+            // ListTile(
+            //   leading: Icon(Icons.email_outlined),
+            //   title: Text('Email'),
+            //   subtitle: Text('support@safebite.com'),
+            // ),
+            // ListTile(
+            //   leading: Icon(Icons.phone_outlined),
+            //   title: Text('Telepon'),
+            //   subtitle: Text('+62 812 3456 7890'),
+            // ),
           ],
         ),
       ),

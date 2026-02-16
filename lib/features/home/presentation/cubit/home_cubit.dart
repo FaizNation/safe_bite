@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../../domain/repositories/home_repository.dart';
+import 'package:safe_bite/features/home/domain/repositories/home_repository.dart';
 import 'home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {

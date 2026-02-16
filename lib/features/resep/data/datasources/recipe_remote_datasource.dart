@@ -79,7 +79,7 @@ class RecipeRemoteDataSourceImpl implements RecipeRemoteDataSource {
       if (meals == null) return [];
       return meals.map((json) {
         final modJson = Map<String, dynamic>.from(json);
-        // Ingredient filter doesn't return category, but we can set it to a placeholder or ignore
+      
         modJson['strCategory'] = 'Unknown';
         return RecipeModel.fromJson(modJson);
       }).toList();

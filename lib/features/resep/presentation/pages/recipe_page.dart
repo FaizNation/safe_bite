@@ -76,14 +76,12 @@ class _RecipeViewState extends State<RecipeView> {
   Widget _buildHeader(BuildContext context) {
     return Stack(
       children: [
-        // Background Image
         Positioned(
           top: 130,
           left: 0,
           right: 0,
           child: Image.asset('assets/images/resep_top.png', fit: BoxFit.cover),
         ),
-        // Gradient overlay (optional, if needed to blend with white background)
         Positioned.fill(
           child: Container(
             decoration: BoxDecoration(
@@ -93,9 +91,9 @@ class _RecipeViewState extends State<RecipeView> {
                 colors: [
                   const Color(
                     0xFFE8F5E9,
-                  ).withValues(alpha: 0.8), // Light green tint
-                  Colors.white.withValues(alpha: 0.0), // Transparent
-                  Colors.white, // Fade to white at bottom
+                  ).withValues(alpha: 0.8), 
+                  Colors.white.withValues(alpha: 0.0), 
+                  Colors.white, 
                 ],
                 stops: const [0.0, 0.6, 1.0],
               ),
@@ -110,7 +108,7 @@ class _RecipeViewState extends State<RecipeView> {
             children: [
               const SizedBox(
                 height: 20,
-              ), // Add some top padding for status bar/safe area if needed
+              ), 
               const Text(
                 'Resep',
                 style: TextStyle(
@@ -121,7 +119,6 @@ class _RecipeViewState extends State<RecipeView> {
                 ),
               ),
               const SizedBox(height: 8),
-              // We might need to ensure this text is visible against the background
               Text(
                 'Mau masak apa hari ini?',
                 style: TextStyle(
@@ -132,7 +129,7 @@ class _RecipeViewState extends State<RecipeView> {
               ),
               const SizedBox(
                 height: 70,
-              ), // Increased spacing to accommodate the image design
+              ), 
               // Search Bar
               RecipeSearchBar(
                 onChanged: (query) {
@@ -212,7 +209,7 @@ class _RecipeViewState extends State<RecipeView> {
   Widget _buildBanner() {
     return Container(
       width: double.infinity,
-      height: 90, // Set a fixed height for the banner
+      height: 90, 
       decoration: BoxDecoration(
         color: const Color(0xFFE8F5E9),
         borderRadius: BorderRadius.circular(12),
@@ -340,7 +337,6 @@ class _RecipeViewState extends State<RecipeView> {
   }
 
   void _showFilterDialog(BuildContext context) {
-    // Capture the cubit from the parent context before showing the modal
     final cubit = context.read<RecipeCubit>();
 
     showDialog(

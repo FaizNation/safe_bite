@@ -27,18 +27,11 @@ class HomeRepositoryImpl implements HomeRepository {
         if (userDoc.exists && userDoc.data() != null) {
           final data = userDoc.data()!;
           if (data.containsKey('profile_photo_blob')) {
-            // Assuming the blob is stored as a base64 string or similar format that needs handling
-            // If it's stored as a Blob in Firestore, we can cast it.
-            // However, Firestore Blobs are usually returned as Blob objects.
-            // Let's check how it's likely stored. If it is a Blob:
             final blob = data['profile_photo_blob'];
             if (blob is Blob) {
               photoBlob = blob.bytes;
             } else if (blob is String) {
-              // If it's a base64 string, we might need to decode it,
-              // but Uint8List expects bytes.
-              // For now, let's assume it might be a Blob or we need to handle it.
-              // If the user says "firebase profile_photo_blob", it's likely a Blob type in Firestore.
+
             }
           }
         }
@@ -64,8 +57,6 @@ class HomeRepositoryImpl implements HomeRepository {
           .collection('users')
           .doc(userId)
           .collection('food_items')
-          // .orderBy('expiry_date')
-          // .limit(10)
           .get();
 
       return snapshot.docs.map((doc) {

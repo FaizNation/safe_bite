@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:safe_bite/features/home/presentation/pages/home_page.dart';
 import 'package:safe_bite/features/profile/presentation/pages/profile_page.dart';
-import '../../../home/presentation/pages/home_page.dart';
-import '../../../resep/presentation/pages/recipe_page.dart';
-import '../../../stats/presentation/pages/stats_page.dart';
-import '../../../scan/presentation/pages/scan_page.dart';
+import 'package:safe_bite/features/resep/presentation/pages/recipe_page.dart';
+import 'package:safe_bite/features/scan/presentation/pages/scan_page.dart';
+import 'package:safe_bite/features/stats/presentation/pages/stats_page.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});

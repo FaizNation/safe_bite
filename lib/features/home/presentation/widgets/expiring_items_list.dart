@@ -30,7 +30,6 @@ class ExpiringItemsList extends StatelessWidget {
       itemBuilder: (context, index) {
         final item = items[index];
         
-        // Calculate days from shelfLife if available, otherwise use expiryDate
         int daysUntilExpiry;
         if (item.shelfLife.isNotEmpty && item.shelfLife != 'Unknown') {
           final parsedDays = _parseShelfLife(item.shelfLife);
@@ -180,7 +179,6 @@ class ExpiringItemsList extends StatelessWidget {
   int _calculateDaysUntilExpiry(DateTime? expiryDate) {
     if (expiryDate == null) return 0;
     final now = DateTime.now();
-    // Reset time components to compare dates only
     final today = DateTime(now.year, now.month, now.day);
     final expiry = DateTime(expiryDate.year, expiryDate.month, expiryDate.day);
     return expiry.difference(today).inDays;
@@ -227,8 +225,8 @@ class ExpiringItemsList extends StatelessWidget {
   }
 
   Color _getStatusColor(int days) {
-    if (days <= 3) return const Color(0xFFD32F2F); // Red
-    if (days <= 7) return const Color(0xFFFBC02D); // Yellow
-    return const Color(0xFF558B49); // Green
+    if (days <= 3) return const Color(0xFFD32F2F);
+    if (days <= 7) return const Color(0xFFFBC02D); 
+    return const Color(0xFF558B49); 
   }
 }

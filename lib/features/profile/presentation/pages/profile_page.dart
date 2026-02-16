@@ -10,7 +10,7 @@ import 'package:safe_bite/features/profile/presentation/pages/help_support_page.
 import 'package:safe_bite/features/auth/presentation/cubit/auth_cubit.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({Key? key}) : super(key: key);
+  const ProfilePage({super.key});
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -120,6 +120,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               builder: (context) => const EditProfilePage(),
                             ),
                           ).then(
+                            // ignore: use_build_context_synchronously
                             (_) => context.read<ProfileCubit>().loadProfile(),
                           );
                         },

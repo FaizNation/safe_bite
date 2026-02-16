@@ -32,9 +32,6 @@ class HomeHeader extends StatelessWidget {
                 ),
                 color: Colors.grey.shade300,
               ),
-              child: user?.photoUrl == null
-                  ? const Icon(Icons.person, color: Colors.grey)
-                  : null,
             ),
             const SizedBox(width: 12),
             Column(

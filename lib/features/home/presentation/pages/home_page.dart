@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:safe_bite/features/home/data/repositories/home_repository_impl.dart';
+import 'package:safe_bite/features/home/presentation/cubit/home_cubit.dart';
+import 'package:safe_bite/features/home/presentation/cubit/home_state.dart';
 import 'package:safe_bite/features/home/presentation/widgets/category_list.dart';
 import 'package:safe_bite/features/home/presentation/widgets/expiring_items_list.dart';
 import 'package:safe_bite/features/home/presentation/widgets/home_header.dart';
 import 'package:safe_bite/features/home/presentation/widgets/stats_card.dart';
-
-import '../../data/repositories/home_repository_impl.dart';
-import '../cubit/home_cubit.dart';
-import '../cubit/home_state.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class HomePage extends StatelessWidget {
@@ -93,7 +92,7 @@ class HomeView extends StatelessWidget {
                               return category == selected;
                             }).toList();
 
-                      // Calculate stats (based on all items or filtered? usually all for stats)
+                     
                       final expiringCount = state.expiringItems
                           .where(
                             (item) =>

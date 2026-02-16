@@ -82,25 +82,19 @@ Group identical items into one entry and count them in 'quantity'.
 
     String? uploadedImageUrl;
 
-    // Process image for blob storage
     Uint8List? imageBlob;
     if (imageFile != null) {
       try {
         final bytes = await imageFile.readAsBytes();
-        // Resize and compress to ensure it fits in Firestore document (1MB limit)
         final image = img.decodeImage(bytes);
         if (image != null) {
-          // Resize to width 600 (maintain aspect ratio)
           final resized = img.copyResize(image, width: 600);
-          // Encode to JPEG with quality 70
           imageBlob = Uint8List.fromList(img.encodeJpg(resized, quality: 70));
         }
       } catch (e) {
         debugPrint('Error processing image for Firestore blob: $e');
       }
     }
-
-    // DEBUG: Write to a test collection to verify connection
     try {
       await firestore.collection('debug_writes').add({
         'user_id': userId,
@@ -128,8 +122,7 @@ Group identical items into one entry and count them in 'quantity'.
     }
 
     for (final item in analysis.items) {
-      final docRef = collection.doc(); // Auto-ID
-
+      final docRef = collection.doc(); 
       final data = {
         'food_name': item.foodName,
         'category': item.category,

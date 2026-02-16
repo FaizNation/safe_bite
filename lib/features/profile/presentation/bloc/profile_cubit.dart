@@ -61,8 +61,6 @@ class ProfileCubit extends Cubit<ProfileState> {
     emit(ProfileLoading());
     try {
       await authRepository.changePassword(currentPassword, newPassword);
-      // We can emit a success state or just reload user.
-      // For now, let's reload to be safe and maybe the UI handles the "Success" toast/dialog
       final user = await authRepository.getCurrentUser();
       if (user != null) {
         emit(ProfileLoaded(user));
