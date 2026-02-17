@@ -121,14 +121,12 @@ class AuthRepositoryImpl implements AuthRepository {
     if (user.email == null) throw Exception('User email not found');
 
     try {
-      // Re-authenticate user
       final credential = EmailAuthProvider.credential(
         email: user.email!,
         password: currentPassword,
       );
       await user.reauthenticateWithCredential(credential);
 
-      // Update password
       await user.updatePassword(newPassword);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'wrong-password') {

@@ -30,7 +30,6 @@ class HomeView extends StatelessWidget {
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          // Background Image
           Positioned(
             top: 0,
             left: 0,
@@ -40,7 +39,7 @@ class HomeView extends StatelessWidget {
               fit: BoxFit.cover,
             ),
           ),
-          // Content
+
           SafeArea(
             child: RefreshIndicator(
               onRefresh: () async {
@@ -59,56 +58,14 @@ class HomeView extends StatelessWidget {
                     } else if (state is HomeError) {
                       return Center(child: Text('Error: ${state.message}'));
                     } else if (state is HomeLoaded) {
-                      // Filter items based on category
-                      final filteredItems = state.selectedCategory == 'all'
-                          ? state.expiringItems
-                          : state.expiringItems.where((item) {
-                              final category = item.category.toLowerCase();
-                              final selected = state.selectedCategory
-                                  .toLowerCase();
-
-                              if (selected == 'vegetables') {
-                                return category.contains('vegetable') ||
-                                    category.contains('sayur');
-                              }
-                              if (selected == 'fruits') {
-                                return category.contains('fruit') ||
-                                    category.contains('buah');
-                              }
-                              if (selected == 'meat') {
-                                return category.contains('meat') ||
-                                    category.contains('daging') ||
-                                    category.contains('chicken') ||
-                                    category.contains('ayam') ||
-                                    category.contains('fish') ||
-                                    category.contains('ikan');
-                              }
-                              if (selected == 'milk') {
-                                return category.contains('milk') ||
-                                    category.contains('susu') ||
-                                    category.contains('dairy');
-                              }
-
-                              return category == selected;
-                            }).toList();
-
-                     
-                      final expiringCount = state.expiringItems
-                          .where(
-                            (item) =>
-                                _calculateDaysUntilExpiry(item.expiryDate) <= 3,
-                          )
-                          .length;
-                      final savedCount = state.expiringItems.length;
-
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           HomeHeader(user: state.user),
                           const SizedBox(height: 24),
                           StatsCard(
-                            expiringCount: expiringCount,
-                            savedCount: savedCount,
+                            expiringCount: state.expiringCount,
+                            savedCount: state.savedCount,
                           ),
                           const SizedBox(height: 24),
                           CategoryList(
@@ -128,7 +85,7 @@ class HomeView extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 16),
-                          ExpiringItemsList(items: filteredItems),
+                          ExpiringItemsList(items: state.filteredItems),
                           const SizedBox(height: 80),
                         ],
                       );
@@ -142,13 +99,5 @@ class HomeView extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  int _calculateDaysUntilExpiry(DateTime? expiryDate) {
-    if (expiryDate == null) return 0;
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final expiry = DateTime(expiryDate.year, expiryDate.month, expiryDate.day);
-    return expiry.difference(today).inDays;
-  }
+}
 }

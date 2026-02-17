@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:typed_data';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:safe_bite/core/utils/app_logger.dart';
 import 'package:safe_bite/features/auth/domain/entities/user_entity.dart';
 import 'package:safe_bite/features/home/domain/repositories/home_repository.dart';
 import 'package:safe_bite/features/scan/data/models/food_analysis_model.dart';
@@ -36,7 +37,7 @@ class HomeRepositoryImpl implements HomeRepository {
           }
         }
       } catch (e) {
-        print('Error fetching user profile blob: $e');
+        AppLogger.error('Error fetching user profile blob: $e');
       }
 
       return UserEntity(

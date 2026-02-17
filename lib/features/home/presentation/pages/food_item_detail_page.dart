@@ -6,7 +6,8 @@ import 'package:safe_bite/features/resep/data/datasources/recipe_remote_datasour
 import 'package:safe_bite/features/resep/data/repositories/recipe_repository_impl.dart';
 import 'package:safe_bite/features/resep/presentation/cubit/recipe_cubit.dart';
 import 'package:safe_bite/features/resep/presentation/cubit/recipe_state.dart';
-import 'package:safe_bite/features/resep/presentation/pages/recipe_detail_page.dart';
+import 'package:safe_bite/features/home/presentation/widgets/detail_row.dart';
+import 'package:safe_bite/features/home/presentation/widgets/recommendation_card.dart';
 import 'package:safe_bite/features/scan/domain/entities/food_analysis.dart';
 
 class FoodItemDetailPage extends StatelessWidget {
@@ -103,7 +104,7 @@ class FoodItemDetailView extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF558B49).withOpacity(0.1),
+                          color: const Color(0xFF558B49).withAlpha(25),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
@@ -118,24 +119,24 @@ class FoodItemDetailView extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 24),
-                  _buildDetailRow(
+                  DetailRow(
                     icon: Icons.calendar_today,
                     label: 'Added At',
                     value: item.addedAt != null
                         ? DateFormat('dd MMM yyyy').format(item.addedAt!)
                         : 'Unknown',
                   ),
-                  _buildDetailRow(
+                  DetailRow(
                     icon: Icons.local_fire_department,
                     label: 'Calories',
                     value: '${item.caloriesApprox} kcal',
                   ),
-                  _buildDetailRow(
+                  DetailRow(
                     icon: Icons.shopping_basket,
                     label: 'Quantity',
                     value: '${item.quantity} pcs',
                   ),
-                  _buildDetailRow(
+                  DetailRow(
                     icon: Icons.timelapse,
                     label: 'Shelf Life',
                     value: item.shelfLife,
@@ -241,7 +242,7 @@ class FoodItemDetailView extends StatelessWidget {
                                 const SizedBox(width: 16),
                             itemBuilder: (context, index) {
                               final recipe = state.recipes[index];
-                              return _buildRecommendationCard(context, recipe);
+                              return RecommendationCard(recipe: recipe);
                             },
                           ),
                         );
@@ -259,120 +260,4 @@ class FoodItemDetailView extends StatelessWidget {
     );
   }
 
-  Widget _buildRecommendationCard(BuildContext context, dynamic recipe) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => RecipeDetailPage(recipeId: recipe.id),
-          ),
-        );
-      },
-      child: Container(
-        width: 140,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
-              blurRadius: 6,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ClipRRect(
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(12)),
-              child: Image.network(
-                recipe.thumbUrl,
-                height: 100,
-                width: 140,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Container(
-                  height: 100,
-                  color: Colors.grey[200],
-                  child: const Icon(Icons.error),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    recipe.name,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.poppins(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '${recipe.timeMinutes} menit',
-                    style: GoogleFonts.poppins(
-                      fontSize: 10,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDetailRow({
-    required IconData icon,
-    required String label,
-    required String value,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: Colors.grey.shade100,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(icon, color: Colors.grey.shade700, size: 20),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: GoogleFonts.poppins(
-                    fontSize: 12,
-                    color: Colors.grey.shade500,
-                  ),
-                ),
-                Text(
-                  value,
-                  style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: const Color(0xFF1E1E1E),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
+import 'package:safe_bite/core/utils/app_logger.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:image_picker/image_picker.dart';
@@ -92,7 +93,7 @@ Group identical items into one entry and count them in 'quantity'.
           imageBlob = Uint8List.fromList(img.encodeJpg(resized, quality: 70));
         }
       } catch (e) {
-        debugPrint('Error processing image for Firestore blob: $e');
+        AppLogger.error('Error processing image for Firestore blob: $e');
       }
     }
     try {
@@ -101,24 +102,24 @@ Group identical items into one entry and count them in 'quantity'.
         'timestamp': FieldValue.serverTimestamp(),
         'message': 'Test write from ScanRepository',
       });
-      debugPrint('DEBUG WRITE SUCCESS: Written to debug_writes');
+      AppLogger.debug('DEBUG WRITE SUCCESS: Written to debug_writes');
     } catch (e) {
-      debugPrint('DEBUG WRITE FAILED: $e');
+      AppLogger.error('DEBUG WRITE FAILED: $e');
     }
 
-    debugPrint('Start saving ${analysis.items.length} items for $userId');
+    AppLogger.info('Start saving ${analysis.items.length} items for $userId');
 
     if (analysis.items.isEmpty) {
-      debugPrint('Warning: No items to save. Analysis returned empty list.');
+      AppLogger.warning('No items to save. Analysis returned empty list.');
       return;
     }
 
     try {
-      debugPrint(
+      AppLogger.debug(
         'Platform check: kIsWeb=$kIsWeb, OperatingSystem=${Platform.operatingSystem}',
       );
     } catch (e) {
-      debugPrint('Platform check: kIsWeb=$kIsWeb');
+      AppLogger.debug('Platform check: kIsWeb=$kIsWeb');
     }
 
     for (final item in analysis.items) {
@@ -138,11 +139,11 @@ Group identical items into one entry and count them in 'quantity'.
         'added_at': FieldValue.serverTimestamp(),
       };
 
-      debugPrint('Queueing write for ${item.foodName}');
+      AppLogger.debug('Queueing write for ${item.foodName}');
       batch.set(docRef, data);
     }
 
     await batch.commit();
-    debugPrint('Batch commit successful');
+    AppLogger.info('Batch commit successful');
   }
 }

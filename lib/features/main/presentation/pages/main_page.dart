@@ -58,7 +58,7 @@ class _MainPageState extends State<MainPage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // Left Group
+              
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -72,10 +72,10 @@ class _MainPageState extends State<MainPage> {
                 ],
               ),
 
-              // Spacer for FAB
+              
               const SizedBox(width: 48),
 
-              // Right Group
+              
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

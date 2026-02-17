@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:safe_bite/core/utils/app_logger.dart';
+import 'package:safe_bite/core/utils/category_helper.dart';
 import 'package:safe_bite/features/stats/domain/entities/stat_item.dart';
 import 'package:safe_bite/features/stats/domain/repositories/stats_repository.dart';
 
@@ -46,7 +48,7 @@ class StatsRepositoryImpl implements StatsRepository {
       for (var doc in docs) {
         final data = doc.data();
         final rawCategory = data['category'] as String? ?? 'Other';
-        final category = _mapCategoryToIndonesian(rawCategory);
+        final category = _toLabelFromKey(normalizeCategory(rawCategory));
 
         categoryCounts[category] = (categoryCounts[category] ?? 0) + 1;
         totalItems++;
@@ -70,29 +72,24 @@ class StatsRepositoryImpl implements StatsRepository {
 
       return items;
     } catch (e) {
-      debugPrint("Error fetching stats: $e");
+      AppLogger.error('Error fetching stats: $e');
       return [];
     }
   }
 
-  String _mapCategoryToIndonesian(String category) {
-    final lower = category.toLowerCase();
-    if (lower.contains('vegetable') || lower.contains('sayur')) return 'Sayur';
-    if (lower.contains('fruit') || lower.contains('buah')) return 'Buah';
-    if (lower.contains('meat') ||
-        lower.contains('daging') ||
-        lower.contains('chicken') ||
-        lower.contains('ayam') ||
-        lower.contains('fish') ||
-        lower.contains('ikan')) {
-      return 'Daging';
+  String _toLabelFromKey(String key) {
+    switch (key) {
+      case 'vegetables':
+        return 'Sayur';
+      case 'fruits':
+        return 'Buah';
+      case 'meat':
+        return 'Daging';
+      case 'milk':
+        return 'Susu';
+      default:
+        return 'Lainnya';
     }
-    if (lower.contains('milk') ||
-        lower.contains('dairy') ||
-        lower.contains('susu')) {
-      return 'Susu';
-    }
-    return 'Lainnya';
   }
 
   Color _getColorForCategory(String category) {

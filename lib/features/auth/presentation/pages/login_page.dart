@@ -199,48 +199,7 @@ class _LoginPageState extends State<LoginPage> {
                                   ),
                                 ),
                               ),
-                              // const SizedBox(height: 24),
-                              // Row(
-                              //   children: [
-                              //     const Expanded(child: Divider()),
-                              //     Padding(
-                              //       padding: const EdgeInsets.symmetric(
-                              //         horizontal: 16,
-                              //       ),
-                              //       child: Text(
-                              //         'Atau masuk dengan',
-                              //         style: GoogleFonts.poppins(
-                              //           color: const Color(0xFF8D8D8D),
-                              //         ),
-                              //       ),
-                              //     ),
-                              //     const Expanded(child: Divider()),
-                              //   ],
-                              // ),
-                              // const SizedBox(height: 24),
-                              // Row(
-                              //   mainAxisAlignment: MainAxisAlignment.center,
-                              //   children: [
-                              //     SocialButton(
-                              //       icon: Icons.g_mobiledata,
-                              //       size: 32,
-                              //       onPressed: () {},
-                              //     ),
-                              //     const SizedBox(width: 16),
-                              //     SocialButton(
-                              //       icon: Icons.facebook,
-                              //       size: 32,
-                              //       iconColor: Colors.blue,
-                              //       onPressed: () {},
-                              //     ),
-                              //     const SizedBox(width: 16),
-                              //     SocialButton(
-                              //       icon: Icons.apple,
-                              //       size: 32,
-                              //       onPressed: () {},
-                              //     ),
-                              //   ],
-                              // ),
+
                               const SizedBox(height: 24),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -271,7 +230,7 @@ class _LoginPageState extends State<LoginPage> {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 20), 
+                              const SizedBox(height: 20),
                             ],
                           ),
                         ),

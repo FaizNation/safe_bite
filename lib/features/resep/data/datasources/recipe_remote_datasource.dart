@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
+import 'package:safe_bite/core/utils/app_logger.dart';
 import '../models/recipe_model.dart';
 
 abstract class RecipeRemoteDataSource {
@@ -25,7 +25,7 @@ class RecipeRemoteDataSourceImpl implements RecipeRemoteDataSource {
       if (meals == null) return [];
       return meals.map((json) => RecipeModel.fromJson(json)).toList();
     } catch (e) {
-      debugPrint('Error searching recipes: $e');
+      AppLogger.error('Error searching recipes: $e');
       throw Exception('Failed to search recipes');
     }
   }
@@ -44,7 +44,7 @@ class RecipeRemoteDataSourceImpl implements RecipeRemoteDataSource {
         return RecipeModel.fromJson(modJson);
       }).toList();
     } catch (e) {
-      debugPrint('Error getting recipes by category: $e');
+      AppLogger.error('Error getting recipes by category: $e');
       throw Exception('Failed to get recipes by category');
     }
   }
@@ -59,7 +59,7 @@ class RecipeRemoteDataSourceImpl implements RecipeRemoteDataSource {
       if (meals == null || meals.isEmpty) throw Exception('Recipe not found');
       return RecipeDetailModel.fromJson(meals.first);
     } catch (e) {
-      debugPrint('Error getting recipe detail: $e');
+      AppLogger.error('Error getting recipe detail: $e');
       throw Exception('Failed to get recipe detail');
     }
   }
@@ -84,7 +84,7 @@ class RecipeRemoteDataSourceImpl implements RecipeRemoteDataSource {
         return RecipeModel.fromJson(modJson);
       }).toList();
     } catch (e) {
-      debugPrint('Error getting recipes by ingredient: $e');
+      AppLogger.error('Error getting recipes by ingredient: $e');
       throw Exception('Failed to get recipes by ingredient');
     }
   }

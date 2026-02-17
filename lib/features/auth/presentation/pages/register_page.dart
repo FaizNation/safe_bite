@@ -46,7 +46,6 @@ class _RegisterPageState extends State<RegisterPage> {
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          // Bottom Decor
           Positioned(
             bottom: 0,
             left: 0,
@@ -57,7 +56,7 @@ class _RegisterPageState extends State<RegisterPage> {
               width: double.infinity,
             ),
           ),
-          // Main Content
+
           SafeArea(
             child: Column(
               children: [
@@ -249,48 +248,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 ),
                               ),
                               const SizedBox(height: 24),
-                              // Row(
-                              //   children: [
-                              //     const Expanded(child: Divider()),
-                              //     Padding(
-                              //       padding: const EdgeInsets.symmetric(
-                              //         horizontal: 16,
-                              //       ),
-                              //       child: Text(
-                              //         'Atau daftar dengan',
-                              //         style: GoogleFonts.poppins(
-                              //           color: const Color(0xFF8D8D8D),
-                              //         ),
-                              //       ),
-                              //     ),
-                              //     const Expanded(child: Divider()),
-                              //   ],
-                              // ),
-                              // const SizedBox(height: 24),
-                              // Row(
-                              //   mainAxisAlignment: MainAxisAlignment.center,
-                              //   children: [
-                              //     SocialButton(
-                              //       icon: Icons.g_mobiledata,
-                              //       size: 32,
-                              //       onPressed: () {},
-                              //     ),
-                              //     const SizedBox(width: 16),
-                              //     SocialButton(
-                              //       icon: Icons.facebook,
-                              //       size: 32,
-                              //       iconColor: Colors.blue,
-                              //       onPressed: () {},
-                              //     ),
-                              //     const SizedBox(width: 16),
-                              //     SocialButton(
-                              //       icon: Icons.apple,
-                              //       size: 32,
-                              //       onPressed: () {},
-                              //     ),
-                              //   ],
-                              // ),
-                              // const SizedBox(height: 24),
+
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [

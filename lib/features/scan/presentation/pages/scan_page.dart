@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:safe_bite/core/utils/app_logger.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -71,7 +72,7 @@ class _ScanViewState extends State<ScanView> {
         }
       }
     } catch (e) {
-      debugPrint('Error picking image: $e');
+      AppLogger.error('Error picking image: $e');
       if (mounted) Navigator.pop(context);
     }
   }
@@ -256,16 +257,16 @@ class _ScanViewState extends State<ScanView> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () async {
-                  debugPrint("Button 'Simpan' PRESSED!");
+                  AppLogger.info("Button 'Simpan' PRESSED!");
                   try {
                     // Check Firebase App
-                    debugPrint("Firebase Project: ${Firebase.app().options.projectId}");
+                    AppLogger.debug("Firebase Project: ${Firebase.app().options.projectId}");
                     
                     final user = FirebaseAuth.instance.currentUser;
-                    debugPrint("Current User: ${user?.uid}");
+                    AppLogger.debug("Current User: ${user?.uid}");
                     
                     if (user != null) {
-                      debugPrint('Items to save: ${data.items.length}');
+                      AppLogger.debug('Items to save: ${data.items.length}');
                       
                       // Show loading
                       showDialog(
@@ -303,8 +304,7 @@ class _ScanViewState extends State<ScanView> {
                       }
                     }
                   } catch (e, stack) {
-                    debugPrint("CRITICAL ERROR IN SAVE: $e");
-                    debugPrint(stack.toString());
+                    AppLogger.error("CRITICAL ERROR IN SAVE", error: e, stackTrace: stack);
                     
                     // Close loading if open
                     if (context.mounted && Navigator.canPop(context)) {
