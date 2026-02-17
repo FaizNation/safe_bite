@@ -2,7 +2,7 @@ import 'dart:typed_data';
 
 import 'package:safe_bite/features/auth/domain/entities/user_entity.dart';
 
-abstract class ProfileRepository {
+abstract class ProfileRemoteDataSource {
   Future<UserEntity?> getCurrentUser();
 
   Future<void> updateProfile({

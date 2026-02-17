@@ -11,6 +11,11 @@ import 'features/auth/domain/usecases/login_usecase.dart';
 import 'features/auth/domain/usecases/register_usecase.dart';
 import 'features/auth/domain/usecases/logout_usecase.dart';
 import 'features/auth/presentation/cubit/auth_cubit.dart';
+import 'features/profile/data/datasources/profile_remote_datasource_impl.dart';
+import 'features/profile/data/repositories/profile_repository_impl.dart';
+import 'features/profile/domain/usecases/get_profile_usecase.dart';
+import 'features/profile/domain/usecases/update_profile_usecase.dart';
+import 'features/profile/domain/usecases/change_password_usecase.dart';
 import 'features/profile/presentation/bloc/profile_cubit.dart';
 
 Future<void> main() async {
@@ -21,7 +26,7 @@ Future<void> main() async {
 }
 
 class SafeBiteApp extends StatelessWidget {
-  const SafeBiteApp({Key? key}) : super(key: key);
+  const SafeBiteApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -45,8 +50,17 @@ class SafeBiteApp extends StatelessWidget {
             },
           ),
           BlocProvider<ProfileCubit>(
-            create: (context) =>
-                ProfileCubit(authRepository: context.read<AuthRepository>()),
+            create: (context) {
+              final datasource = ProfileRemoteDataSourceImpl();
+              final repository = ProfileRepositoryImpl(
+                remoteDataSource: datasource,
+              );
+              return ProfileCubit(
+                getProfile: GetProfileUseCase(repository),
+                updateProfile: UpdateProfileUseCase(repository),
+                changePassword: ChangePasswordUseCase(repository),
+              );
+            },
           ),
         ],
         child: MaterialApp(

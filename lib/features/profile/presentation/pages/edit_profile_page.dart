@@ -187,7 +187,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
         maxHeight: 800,
       );
       if (pickedFile != null && mounted) {
-        context.read<ProfileCubit>().updateProfilePhoto(pickedFile);
+        final bytes = await pickedFile.readAsBytes();
+        // ignore: use_build_context_synchronously
+        context.read<ProfileCubit>().updateProfilePhoto(bytes);
       }
     } catch (e) {
       AppLogger.error('Error picking image: $e');

@@ -1,17 +1,29 @@
+import 'dart:typed_data';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:safe_bite/features/auth/domain/repositories/auth_repository.dart';
+import 'package:safe_bite/features/profile/domain/usecases/get_profile_usecase.dart';
+import 'package:safe_bite/features/profile/domain/usecases/update_profile_usecase.dart';
+import 'package:safe_bite/features/profile/domain/usecases/change_password_usecase.dart';
 import 'profile_state.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {
-  final AuthRepository authRepository;
+  final GetProfileUseCase _getProfile;
+  final UpdateProfileUseCase _updateProfile;
+  final ChangePasswordUseCase _changePassword;
 
-  ProfileCubit({required this.authRepository}) : super(ProfileInitial());
+  ProfileCubit({
+    required GetProfileUseCase getProfile,
+    required UpdateProfileUseCase updateProfile,
+    required ChangePasswordUseCase changePassword,
+  }) : _getProfile = getProfile,
+       _updateProfile = updateProfile,
+       _changePassword = changePassword,
+       super(ProfileInitial());
 
   Future<void> loadProfile() async {
     emit(ProfileLoading());
     try {
-      final user = await authRepository.getCurrentUser();
+      final user = await _getProfile();
       if (user != null) {
         emit(ProfileLoaded(user));
       } else {
@@ -25,8 +37,8 @@ class ProfileCubit extends Cubit<ProfileState> {
   Future<void> updateProfile({String? name, String? photoUrl}) async {
     emit(ProfileLoading());
     try {
-      await authRepository.updateProfile(name: name, photoUrl: photoUrl);
-      final user = await authRepository.getCurrentUser();
+      await _updateProfile(name: name, photoUrl: photoUrl);
+      final user = await _getProfile();
       if (user != null) {
         emit(ProfileLoaded(user));
       } else {
@@ -37,13 +49,11 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
-  Future<void> updateProfilePhoto(XFile image) async {
+  Future<void> updateProfilePhoto(Uint8List photoBytes) async {
     emit(ProfileLoading());
     try {
-      final bytes = await image.readAsBytes();
-      await authRepository.updateProfile(photoBlob: bytes);
-
-      final user = await authRepository.getCurrentUser();
+      await _updateProfile(photoBlob: photoBytes);
+      final user = await _getProfile();
       if (user != null) {
         emit(ProfileLoaded(user));
       } else {
@@ -60,8 +70,8 @@ class ProfileCubit extends Cubit<ProfileState> {
   ) async {
     emit(ProfileLoading());
     try {
-      await authRepository.changePassword(currentPassword, newPassword);
-      final user = await authRepository.getCurrentUser();
+      await _changePassword(currentPassword, newPassword);
+      final user = await _getProfile();
       if (user != null) {
         emit(ProfileLoaded(user));
       } else {
