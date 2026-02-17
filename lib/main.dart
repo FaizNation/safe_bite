@@ -6,6 +6,7 @@ import 'firebase_options.dart';
 import 'features/splash/presentation/pages/splash_page.dart';
 import 'features/auth/domain/repositories/auth_repository.dart';
 import 'features/auth/data/repositories/auth_repository_impl.dart';
+import 'features/auth/data/datasources/auth_remote_datasource_impl.dart';
 import 'features/auth/domain/usecases/login_usecase.dart';
 import 'features/auth/domain/usecases/register_usecase.dart';
 import 'features/auth/domain/usecases/logout_usecase.dart';
@@ -27,7 +28,8 @@ class SafeBiteApp extends StatelessWidget {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider<AuthRepository>(
-          create: (context) => AuthRepositoryImpl(),
+          create: (context) =>
+              AuthRepositoryImpl(remoteDataSource: AuthRemoteDataSourceImpl()),
         ),
       ],
       child: MultiBlocProvider(
