@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:safe_bite/core/utils/app_logger.dart';
 import 'package:safe_bite/features/profile/presentation/bloc/profile_cubit.dart';
 import 'package:safe_bite/features/profile/presentation/bloc/profile_state.dart';
 
@@ -181,15 +182,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
     try {
       final pickedFile = await _picker.pickImage(
         source: source,
-        imageQuality: 50, // Compress image
+        imageQuality: 50,
         maxWidth: 800,
         maxHeight: 800,
       );
       if (pickedFile != null && mounted) {
-        context.read<ProfileCubit>().updateProfilePhoto(pickedFile);
+        final bytes = await pickedFile.readAsBytes();
+        // ignore: use_build_context_synchronously
+        context.read<ProfileCubit>().updateProfilePhoto(bytes);
       }
     } catch (e) {
-      debugPrint('Error picking image: $e');
+      AppLogger.error('Error picking image: $e');
     }
   }
 }

@@ -1,4 +1,6 @@
 import 'package:equatable/equatable.dart';
+import 'package:safe_bite/core/utils/category_helper.dart';
+import 'package:safe_bite/core/utils/expiry_helper.dart';
 import 'package:safe_bite/features/auth/domain/entities/user_entity.dart';
 import 'package:safe_bite/features/scan/domain/entities/food_analysis.dart';
 
@@ -22,6 +24,17 @@ class HomeLoaded extends HomeState {
     required this.expiringItems,
     this.selectedCategory = 'all',
   });
+
+  List<FoodItem> get filteredItems =>
+      filterItemsByCategory(expiringItems, selectedCategory);
+
+  int get expiringCount => expiringItems
+      .where(
+        (item) => resolveDaysUntilExpiry(item.shelfLife, item.expiryDate) <= 3,
+      )
+      .length;
+
+  int get savedCount => expiringItems.length;
 
   @override
   List<Object?> get props => [user, expiringItems, selectedCategory];

@@ -3,6 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:safe_bite/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:safe_bite/features/auth/presentation/cubit/auth_state.dart';
+import 'package:safe_bite/features/auth/presentation/widgets/auth_text_field.dart';
+import 'package:safe_bite/features/auth/presentation/widgets/auth_button.dart';
+import 'package:safe_bite/features/auth/presentation/widgets/auth_footer_link.dart';
 import 'package:safe_bite/features/main/presentation/pages/main_page.dart';
 import 'login_page.dart';
 
@@ -46,7 +49,6 @@ class _RegisterPageState extends State<RegisterPage> {
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          // Bottom Decor
           Positioned(
             bottom: 0,
             left: 0,
@@ -57,7 +59,7 @@ class _RegisterPageState extends State<RegisterPage> {
               width: double.infinity,
             ),
           ),
-          // Main Content
+
           SafeArea(
             child: Column(
               children: [
@@ -114,17 +116,9 @@ class _RegisterPageState extends State<RegisterPage> {
                                 ),
                               ),
                               const SizedBox(height: 32),
-                              TextFormField(
+                              AuthTextField(
                                 controller: _nameController,
-                                decoration: InputDecoration(
-                                  labelText: 'Nama',
-                                  labelStyle: GoogleFonts.poppins(),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  filled: true,
-                                  fillColor: Colors.white,
-                                ),
+                                labelText: 'Nama',
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return 'Nama tidak boleh kosong';
@@ -133,17 +127,9 @@ class _RegisterPageState extends State<RegisterPage> {
                                 },
                               ),
                               const SizedBox(height: 16),
-                              TextFormField(
+                              AuthTextField(
                                 controller: _emailController,
-                                decoration: InputDecoration(
-                                  labelText: 'Email',
-                                  labelStyle: GoogleFonts.poppins(),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  filled: true,
-                                  fillColor: Colors.white,
-                                ),
+                                labelText: 'Email',
                                 keyboardType: TextInputType.emailAddress,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
@@ -156,31 +142,22 @@ class _RegisterPageState extends State<RegisterPage> {
                                 },
                               ),
                               const SizedBox(height: 16),
-                              TextFormField(
+                              AuthTextField(
                                 controller: _passwordController,
-                                decoration: InputDecoration(
-                                  labelText: 'Kata sandi',
-                                  labelStyle: GoogleFonts.poppins(),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  filled: true,
-                                  fillColor: Colors.white,
-                                  suffixIcon: IconButton(
-                                    icon: Icon(
-                                      _isPasswordVisible
-                                          ? Icons.visibility_off
-                                          : Icons.visibility,
-                                    ),
-                                    onPressed: () {
-                                      setState(() {
-                                        _isPasswordVisible =
-                                            !_isPasswordVisible;
-                                      });
-                                    },
-                                  ),
-                                ),
+                                labelText: 'Kata sandi',
                                 obscureText: !_isPasswordVisible,
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _isPasswordVisible
+                                        ? Icons.visibility_off
+                                        : Icons.visibility,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _isPasswordVisible = !_isPasswordVisible;
+                                    });
+                                  },
+                                ),
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return 'Kata sandi tidak boleh kosong';
@@ -192,31 +169,22 @@ class _RegisterPageState extends State<RegisterPage> {
                                 },
                               ),
                               const SizedBox(height: 16),
-                              TextFormField(
+                              AuthTextField(
                                 controller: _confirmPasswordController,
-                                decoration: InputDecoration(
-                                  labelText: 'Konfirmasi Kata Sandi',
-                                  labelStyle: GoogleFonts.poppins(),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  filled: true,
-                                  fillColor: Colors.white,
-                                  suffixIcon: IconButton(
-                                    icon: Icon(
-                                      _isPasswordVisible
-                                          ? Icons.visibility_off
-                                          : Icons.visibility,
-                                    ),
-                                    onPressed: () {
-                                      setState(() {
-                                        _isPasswordVisible =
-                                            !_isPasswordVisible;
-                                      });
-                                    },
-                                  ),
-                                ),
+                                labelText: 'Konfirmasi Kata Sandi',
                                 obscureText: !_isPasswordVisible,
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _isPasswordVisible
+                                        ? Icons.visibility_off
+                                        : Icons.visibility,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _isPasswordVisible = !_isPasswordVisible;
+                                    });
+                                  },
+                                ),
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return 'Konfirmasi kata sandi tidak boleh kosong';
@@ -228,97 +196,22 @@ class _RegisterPageState extends State<RegisterPage> {
                                 },
                               ),
                               const SizedBox(height: 24),
-                              ElevatedButton(
+                              AuthButton(
+                                text: 'Daftar',
                                 onPressed: _submitForm,
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFF6B9F5E),
-                                  foregroundColor: Colors.white,
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 16,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                ),
-                                child: Text(
-                                  'Daftar',
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
                               ),
                               const SizedBox(height: 24),
-                              // Row(
-                              //   children: [
-                              //     const Expanded(child: Divider()),
-                              //     Padding(
-                              //       padding: const EdgeInsets.symmetric(
-                              //         horizontal: 16,
-                              //       ),
-                              //       child: Text(
-                              //         'Atau daftar dengan',
-                              //         style: GoogleFonts.poppins(
-                              //           color: const Color(0xFF8D8D8D),
-                              //         ),
-                              //       ),
-                              //     ),
-                              //     const Expanded(child: Divider()),
-                              //   ],
-                              // ),
-                              // const SizedBox(height: 24),
-                              // Row(
-                              //   mainAxisAlignment: MainAxisAlignment.center,
-                              //   children: [
-                              //     SocialButton(
-                              //       icon: Icons.g_mobiledata,
-                              //       size: 32,
-                              //       onPressed: () {},
-                              //     ),
-                              //     const SizedBox(width: 16),
-                              //     SocialButton(
-                              //       icon: Icons.facebook,
-                              //       size: 32,
-                              //       iconColor: Colors.blue,
-                              //       onPressed: () {},
-                              //     ),
-                              //     const SizedBox(width: 16),
-                              //     SocialButton(
-                              //       icon: Icons.apple,
-                              //       size: 32,
-                              //       onPressed: () {},
-                              //     ),
-                              //   ],
-                              // ),
-                              // const SizedBox(height: 24),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Sudah memiliki akun? ',
-                                    style: GoogleFonts.poppins(
-                                      color: const Color(0xFF8D8D8D),
+                              AuthFooterLink(
+                                promptText: 'Sudah memiliki akun? ',
+                                linkText: 'Masuk',
+                                onPressed: () {
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const LoginPage(),
                                     ),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              const LoginPage(),
-                                        ),
-                                      );
-                                    },
-                                    child: Text(
-                                      'Masuk',
-                                      style: GoogleFonts.poppins(
-                                        color: const Color(0xFF6B9F5E),
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                                  );
+                                },
                               ),
                               const SizedBox(height: 20),
                             ],

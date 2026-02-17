@@ -1,5 +1,5 @@
-import '../entities/recipe.dart';
-import '../entities/recipe_detail.dart';
+import 'package:safe_bite/features/resep/domain/entities/recipe.dart';
+import 'package:safe_bite/features/resep/domain/entities/recipe_detail.dart';
 
 abstract class RecipeRepository {
   Future<List<Recipe>> searchRecipes(String query);

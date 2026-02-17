@@ -6,11 +6,33 @@ import 'firebase_options.dart';
 import 'features/splash/presentation/pages/splash_page.dart';
 import 'features/auth/domain/repositories/auth_repository.dart';
 import 'features/auth/data/repositories/auth_repository_impl.dart';
+import 'features/auth/data/datasources/auth_remote_datasource_impl.dart';
 import 'features/auth/domain/usecases/login_usecase.dart';
 import 'features/auth/domain/usecases/register_usecase.dart';
 import 'features/auth/domain/usecases/logout_usecase.dart';
+import 'features/auth/domain/usecases/get_current_user_usecase.dart';
 import 'features/auth/presentation/cubit/auth_cubit.dart';
+import 'features/profile/data/datasources/profile_remote_datasource_impl.dart';
+import 'features/profile/data/repositories/profile_repository_impl.dart';
+import 'features/profile/domain/usecases/get_profile_usecase.dart';
+import 'features/profile/domain/usecases/update_profile_usecase.dart';
+import 'features/profile/domain/usecases/change_password_usecase.dart';
 import 'features/profile/presentation/bloc/profile_cubit.dart';
+import 'features/scan/data/datasources/scan_remote_data_source_impl.dart';
+import 'features/scan/data/repositories/scan_repository_impl.dart';
+import 'features/scan/domain/usecases/analyze_image_use_case.dart';
+import 'features/scan/domain/usecases/save_food_items_use_case.dart';
+import 'features/scan/presentation/cubit/scan_cubit.dart';
+import 'features/stats/data/datasources/stats_remote_datasource_impl.dart';
+import 'features/stats/data/repositories/stats_repository_impl.dart';
+import 'features/stats/domain/usecases/get_stats_usecase.dart';
+import 'features/stats/presentation/cubit/stats_cubit.dart';
+import 'features/home/data/datasources/home_remote_datasource_impl.dart';
+import 'features/home/data/repositories/home_repository_impl.dart';
+import 'features/home/domain/usecases/get_user_profile.dart';
+import 'features/home/domain/usecases/get_expiring_items.dart';
+import 'features/home/domain/usecases/delete_food_item.dart';
+import 'features/home/presentation/cubit/home_cubit.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,14 +42,15 @@ Future<void> main() async {
 }
 
 class SafeBiteApp extends StatelessWidget {
-  const SafeBiteApp({Key? key}) : super(key: key);
+  const SafeBiteApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider<AuthRepository>(
-          create: (context) => AuthRepositoryImpl(),
+          create: (context) =>
+              AuthRepositoryImpl(remoteDataSource: AuthRemoteDataSourceImpl()),
         ),
       ],
       child: MultiBlocProvider(
@@ -43,8 +66,57 @@ class SafeBiteApp extends StatelessWidget {
             },
           ),
           BlocProvider<ProfileCubit>(
-            create: (context) =>
-                ProfileCubit(authRepository: context.read<AuthRepository>()),
+            create: (context) {
+              final datasource = ProfileRemoteDataSourceImpl();
+              final repository = ProfileRepositoryImpl(
+                remoteDataSource: datasource,
+              );
+              return ProfileCubit(
+                getProfile: GetProfileUseCase(repository),
+                updateProfile: UpdateProfileUseCase(repository),
+                changePassword: ChangePasswordUseCase(repository),
+              );
+            },
+          ),
+          BlocProvider<ScanCubit>(
+            create: (context) {
+              final authRepository = context.read<AuthRepository>();
+              final scanDatasource = ScanRemoteDataSourceImpl();
+              final scanRepository = ScanRepositoryImpl(
+                remoteDataSource: scanDatasource,
+              );
+              return ScanCubit(
+                analyzeImage: AnalyzeImageUseCase(scanRepository),
+                saveFoodItems: SaveFoodItemsUseCase(scanRepository),
+                getCurrentUser: GetCurrentUserUseCase(authRepository),
+              );
+            },
+          ),
+          BlocProvider<StatsCubit>(
+            create: (context) {
+              final authRepository = context.read<AuthRepository>();
+              final statsDatasource = StatsRemoteDataSourceImpl();
+              final statsRepository = StatsRepositoryImpl(
+                remoteDataSource: statsDatasource,
+              );
+              return StatsCubit(
+                getStats: GetStatsUseCase(statsRepository),
+                getCurrentUser: GetCurrentUserUseCase(authRepository),
+              )..loadStats();
+            },
+          ),
+          BlocProvider<HomeCubit>(
+            create: (context) {
+              final homeDatasource = HomeRemoteDataSourceImpl();
+              final homeRepository = HomeRepositoryImpl(
+                remoteDataSource: homeDatasource,
+              );
+              return HomeCubit(
+                getUserProfile: GetUserProfileUseCase(homeRepository),
+                getExpiringItems: GetExpiringItemsUseCase(homeRepository),
+                deleteFoodItem: DeleteFoodItemUseCase(homeRepository),
+              );
+            },
           ),
         ],
         child: MaterialApp(

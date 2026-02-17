@@ -1,5 +1,7 @@
-import '../../domain/entities/recipe.dart';
-import '../../domain/entities/recipe_detail.dart';
+
+
+import 'package:safe_bite/features/resep/domain/entities/recipe.dart';
+import 'package:safe_bite/features/resep/domain/entities/recipe_detail.dart';
 
 class RecipeModel extends Recipe {
   const RecipeModel({

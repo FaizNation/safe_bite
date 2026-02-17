@@ -99,8 +99,9 @@ class CameraCubit extends Cubit<CameraState> {
     final state = this.state;
     if (state is! CameraReady ||
         _controller == null ||
-        !_controller!.value.isInitialized)
+        !_controller!.value.isInitialized) {
       return;
+    }
 
     try {
       final XFile image = await _controller!.takePicture();

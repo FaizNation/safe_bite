@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../domain/entities/food_analysis.dart';
+import 'package:safe_bite/features/scan/domain/entities/food_analysis.dart';
 
 class FoodItemModel extends FoodItem {
   const FoodItemModel({
+    super.documentId,
     required super.foodName,
     required super.category,
     required super.freshnessLevel,
@@ -20,7 +21,7 @@ class FoodItemModel extends FoodItem {
     super.imageBlob,
   });
 
-  factory FoodItemModel.fromJson(Map<String, dynamic> json) {
+  factory FoodItemModel.fromJson(Map<String, dynamic> json, {String? docId}) {
     List<int>? box;
     if (json['box_2d'] != null) {
       box = List<int>.from(json['box_2d']);
@@ -31,7 +32,6 @@ class FoodItemModel extends FoodItem {
       if (json['image_blob'] is Blob) {
         blobBytes = (json['image_blob'] as Blob).bytes;
       } else if (json['image_blob'] is String) {
-        // Handle base64 string if ever stored that way
         try {
           blobBytes = base64Decode(json['image_blob']);
         } catch (_) {}
@@ -48,6 +48,7 @@ class FoodItemModel extends FoodItem {
     }
 
     return FoodItemModel(
+      documentId: docId,
       foodName: json['food_name'] ?? 'Unknown',
       category: json['category'] ?? 'Other',
       freshnessLevel: json['freshness_level'] ?? 'Unknown',
@@ -89,7 +90,6 @@ class FoodAnalysisModel extends FoodAnalysis {
   const FoodAnalysisModel({required super.isFood, required super.items});
 
   factory FoodAnalysisModel.fromJson(String jsonString) {
-    // Clean potential markdown
     String cleanJson = jsonString
         .replaceAll(RegExp(r'^```json\s*'), '')
         .replaceAll(RegExp(r'\s*```$'), '');

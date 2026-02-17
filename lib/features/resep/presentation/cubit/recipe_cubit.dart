@@ -1,19 +1,38 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../domain/entities/recipe.dart';
-import '../../domain/repositories/recipe_repository.dart';
+import 'package:safe_bite/features/resep/domain/entities/recipe.dart';
+import 'package:safe_bite/features/resep/domain/usecases/get_random_recipes_usecase.dart';
+import 'package:safe_bite/features/resep/domain/usecases/get_recipe_detail_usecase.dart';
+import 'package:safe_bite/features/resep/domain/usecases/get_recipes_by_category_usecase.dart';
+import 'package:safe_bite/features/resep/domain/usecases/get_recipes_by_ingredient_usecase.dart';
+import 'package:safe_bite/features/resep/domain/usecases/search_recipes_usecase.dart';
 import 'recipe_state.dart';
 
 class RecipeCubit extends Cubit<RecipeState> {
-  final RecipeRepository repository;
+  final SearchRecipesUseCase _searchRecipes;
+  final GetRecipesByCategoryUseCase _getRecipesByCategory;
+  final GetRecipeDetailUseCase _getRecipeDetail;
+  final GetRandomRecipesUseCase _getRandomRecipes;
+  final GetRecipesByIngredientUseCase _getRecipesByIngredient;
 
-  RecipeCubit(this.repository) : super(RecipeInitial());
+  RecipeCubit({
+    required SearchRecipesUseCase searchRecipes,
+    required GetRecipesByCategoryUseCase getRecipesByCategory,
+    required GetRecipeDetailUseCase getRecipeDetail,
+    required GetRandomRecipesUseCase getRandomRecipes,
+    required GetRecipesByIngredientUseCase getRecipesByIngredient,
+  }) : _searchRecipes = searchRecipes,
+       _getRecipesByCategory = getRecipesByCategory,
+       _getRecipeDetail = getRecipeDetail,
+       _getRandomRecipes = getRandomRecipes,
+       _getRecipesByIngredient = getRecipesByIngredient,
+       super(RecipeInitial());
 
   Future<void> loadInitialData() async {
     try {
       emit(RecipeLoading());
 
-      final recipes = await repository.getRecipesByCategory('Breakfast');
-      final recommendations = await repository.getRecipesByCategory('Dessert');
+      final recipes = await _getRecipesByCategory('Breakfast');
+      final recommendations = await _getRecipesByCategory('Dessert');
 
       emit(
         RecipeLoaded(
@@ -30,8 +49,8 @@ class RecipeCubit extends Cubit<RecipeState> {
   Future<void> searchRecipes(String query) async {
     try {
       emit(RecipeLoading());
-      final results = await repository.searchRecipes(query);
-      final recommendations = await repository.getRandomRecipes();
+      final results = await _searchRecipes(query);
+      final recommendations = await _getRandomRecipes();
 
       emit(
         RecipeLoaded(
@@ -53,10 +72,10 @@ class RecipeCubit extends Cubit<RecipeState> {
       }
 
       emit(RecipeLoading());
-      final recipes = await repository.getRecipesByCategory(category);
+      final recipes = await _getRecipesByCategory(category);
 
       if (currentRecommendations.isEmpty) {
-        currentRecommendations = await repository.getRandomRecipes();
+        currentRecommendations = await _getRandomRecipes();
       }
 
       emit(
@@ -79,10 +98,10 @@ class RecipeCubit extends Cubit<RecipeState> {
       }
 
       emit(RecipeLoading());
-      final recipes = await repository.getRecipesByIngredient(ingredient);
+      final recipes = await _getRecipesByIngredient(ingredient);
 
       if (currentRecommendations.isEmpty) {
-        currentRecommendations = await repository.getRandomRecipes();
+        currentRecommendations = await _getRandomRecipes();
       }
 
       emit(
@@ -100,7 +119,7 @@ class RecipeCubit extends Cubit<RecipeState> {
   Future<void> loadRecipeDetail(String id) async {
     try {
       emit(RecipeDetailLoading());
-      final detail = await repository.getRecipeDetail(id);
+      final detail = await _getRecipeDetail(id);
       emit(RecipeDetailLoaded(detail));
     } catch (e) {
       emit(RecipeError(e.toString()));

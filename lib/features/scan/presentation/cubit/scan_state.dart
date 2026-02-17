@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import '../../domain/entities/food_analysis.dart';
+import 'package:safe_bite/features/scan/domain/entities/food_analysis.dart';
 
 abstract class ScanState extends Equatable {
   const ScanState();
@@ -20,6 +20,8 @@ class ScanSuccess extends ScanState {
   @override
   List<Object> get props => [result];
 }
+
+class ScanSaved extends ScanState {}
 
 class ScanFailure extends ScanState {
   final String message;
