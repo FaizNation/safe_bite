@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:safe_bite/features/home/data/datasources/home_remote_datasource_impl.dart';
 import 'package:safe_bite/features/home/data/repositories/home_repository_impl.dart';
+import 'package:safe_bite/features/home/domain/usecases/get_user_profile.dart';
+import 'package:safe_bite/features/home/domain/usecases/get_expiring_items.dart';
 import 'package:safe_bite/features/home/presentation/cubit/home_cubit.dart';
 import 'package:safe_bite/features/home/presentation/cubit/home_state.dart';
 import 'package:safe_bite/features/home/presentation/widgets/category_list.dart';
@@ -14,8 +17,14 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final datasource = HomeRemoteDataSourceImpl();
+    final repository = HomeRepositoryImpl(remoteDataSource: datasource);
+
     return BlocProvider(
-      create: (context) => HomeCubit(HomeRepositoryImpl())..loadHomeData(),
+      create: (context) => HomeCubit(
+        getUserProfile: GetUserProfileUseCase(repository),
+        getExpiringItems: GetExpiringItemsUseCase(repository),
+      )..loadHomeData(),
       child: const HomeView(),
     );
   }
