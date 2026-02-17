@@ -4,6 +4,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:safe_bite/features/resep/data/datasources/recipe_remote_datasource.dart';
 import 'package:safe_bite/features/resep/data/repositories/recipe_repository_impl.dart';
+import 'package:safe_bite/features/resep/domain/usecases/search_recipes_usecase.dart';
+import 'package:safe_bite/features/resep/domain/usecases/get_recipes_by_category_usecase.dart';
+import 'package:safe_bite/features/resep/domain/usecases/get_recipe_detail_usecase.dart';
+import 'package:safe_bite/features/resep/domain/usecases/get_random_recipes_usecase.dart';
+import 'package:safe_bite/features/resep/domain/usecases/get_recipes_by_ingredient_usecase.dart';
 import 'package:safe_bite/features/resep/presentation/cubit/recipe_cubit.dart';
 import 'package:safe_bite/features/resep/presentation/cubit/recipe_state.dart';
 import 'package:safe_bite/features/home/presentation/widgets/detail_row.dart';
@@ -17,9 +22,16 @@ class FoodItemDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final datasource = RecipeRemoteDataSourceImpl();
+    final repository = RecipeRepositoryImpl(remoteDataSource: datasource);
+
     return BlocProvider(
       create: (context) => RecipeCubit(
-        RecipeRepositoryImpl(remoteDataSource: RecipeRemoteDataSourceImpl()),
+        searchRecipes: SearchRecipesUseCase(repository),
+        getRecipesByCategory: GetRecipesByCategoryUseCase(repository),
+        getRecipeDetail: GetRecipeDetailUseCase(repository),
+        getRandomRecipes: GetRandomRecipesUseCase(repository),
+        getRecipesByIngredient: GetRecipesByIngredientUseCase(repository),
       )..filterByIngredient(item.foodName),
       child: FoodItemDetailView(item: item),
     );

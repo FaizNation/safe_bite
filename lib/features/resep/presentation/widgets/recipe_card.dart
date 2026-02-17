@@ -33,7 +33,6 @@ class RecipeCard extends StatelessWidget {
             padding: const EdgeInsets.all(12),
             child: Row(
               children: [
-                // Thumbnail
                 ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: CachedNetworkImage(
@@ -51,7 +50,6 @@ class RecipeCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 16),
 
-                // Details
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,26 +75,6 @@ class RecipeCard extends StatelessWidget {
                     ],
                   ),
                 ),
-
-                // // Button "Lihat Resep"
-                // Container(
-                //   padding: const EdgeInsets.symmetric(
-                //     horizontal: 12,
-                //     vertical: 8,
-                //   ),
-                //   decoration: BoxDecoration(
-                //     color: Colors.grey.shade100,
-                //     borderRadius: BorderRadius.circular(20),
-                //   ),
-                //   child: const Text(
-                //     "Lihat Resep",
-                //     style: TextStyle(
-                //       fontSize: 10,
-                //       fontWeight: FontWeight.bold,
-                //       color: Colors.grey,
-                //     ),
-                //   ),
-                // ),
               ],
             ),
           ),

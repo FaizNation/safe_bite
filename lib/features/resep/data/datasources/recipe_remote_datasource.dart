@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:safe_bite/core/utils/app_logger.dart';
-import '../models/recipe_model.dart';
+import 'package:safe_bite/features/resep/data/models/recipe_model.dart';
 
 abstract class RecipeRemoteDataSource {
   Future<List<RecipeModel>> searchRecipes(String query);

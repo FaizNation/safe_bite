@@ -1,8 +1,8 @@
-import '../../domain/entities/recipe.dart';
-import '../../domain/entities/recipe_detail.dart';
-import '../../domain/repositories/recipe_repository.dart';
-import '../datasources/recipe_remote_datasource.dart';
-import '../../../../core/utils/translation_helper.dart';
+import 'package:safe_bite/core/utils/translation_helper.dart';
+import 'package:safe_bite/features/resep/data/datasources/recipe_remote_datasource.dart';
+import 'package:safe_bite/features/resep/domain/entities/recipe.dart';
+import 'package:safe_bite/features/resep/domain/entities/recipe_detail.dart';
+import 'package:safe_bite/features/resep/domain/repositories/recipe_repository.dart';
 
 class RecipeRepositoryImpl implements RecipeRepository {
   final RecipeRemoteDataSource remoteDataSource;
@@ -29,19 +29,17 @@ class RecipeRepositoryImpl implements RecipeRepository {
   Future<RecipeDetail> getRecipeDetail(String id) async {
     final detail = await remoteDataSource.getRecipeDetail(id);
 
-    // Translate fields
-    // Running in parallel to save time
     final results = await Future.wait([
       translationHelper.translateText(detail.instructions),
       translationHelper.translateText(detail.category),
       translationHelper.translateText(detail.area),
       translationHelper.translateList(detail.ingredients),
-      translationHelper.translateText(detail.name), // Translate name
+      translationHelper.translateText(detail.name),
     ]);
 
     return RecipeDetail(
       id: detail.id,
-      name: results[4] as String, // Use translated name
+      name: results[4] as String,
       thumbUrl: detail.thumbUrl,
       category: results[1] as String,
       instructions: results[0] as String,
@@ -54,23 +52,18 @@ class RecipeRepositoryImpl implements RecipeRepository {
 
   @override
   Future<List<Recipe>> searchRecipes(String query) async {
-    // 1. Translate query from ID to EN
     final translatedQuery = await translationHelper.translateText(
       query,
       to: 'en',
     );
 
-    // 2. Fetch recipes with translated query
     final recipes = await remoteDataSource.searchRecipes(translatedQuery);
 
-    // 3. Translate recipe names from EN to ID
     return _translateRecipes(recipes);
   }
 
   @override
   Future<List<Recipe>> getRecipesByIngredient(String ingredient) async {
-    // 1. Translate ingredient from ID to EN (just in case, though we might pass EN directly)
-    // But since "Susu" -> "Milk", we should translate.
     final translatedIngredient = await translationHelper.translateText(
       ingredient,
       to: 'en',
@@ -88,8 +81,6 @@ class RecipeRepositoryImpl implements RecipeRepository {
     final names = recipes.map((r) => r.name).toList();
     final translatedNames = await translationHelper.translateList(names);
 
-    // Map back to Recipe objects with translated names
-    // maintaining the original order
     return List.generate(recipes.length, (index) {
       final recipe = recipes[index];
       return Recipe(

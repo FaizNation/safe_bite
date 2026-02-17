@@ -2,11 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../data/datasources/recipe_remote_datasource.dart';
 import '../../data/repositories/recipe_repository_impl.dart';
+import '../../domain/usecases/search_recipes_usecase.dart';
+import '../../domain/usecases/get_recipes_by_category_usecase.dart';
+import '../../domain/usecases/get_recipe_detail_usecase.dart';
+import '../../domain/usecases/get_random_recipes_usecase.dart';
+import '../../domain/usecases/get_recipes_by_ingredient_usecase.dart';
 import '../cubit/recipe_cubit.dart';
 import '../cubit/recipe_state.dart';
 import '../widgets/recipe_card.dart';
 import '../widgets/recipe_search_bar.dart';
 import 'recipe_detail_page.dart';
+
+RecipeCubit _createRecipeCubit() {
+  final datasource = RecipeRemoteDataSourceImpl();
+  final repository = RecipeRepositoryImpl(remoteDataSource: datasource);
+  return RecipeCubit(
+    searchRecipes: SearchRecipesUseCase(repository),
+    getRecipesByCategory: GetRecipesByCategoryUseCase(repository),
+    getRecipeDetail: GetRecipeDetailUseCase(repository),
+    getRandomRecipes: GetRandomRecipesUseCase(repository),
+    getRecipesByIngredient: GetRecipesByIngredientUseCase(repository),
+  );
+}
 
 class RecipePage extends StatelessWidget {
   const RecipePage({super.key});
@@ -14,9 +31,7 @@ class RecipePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => RecipeCubit(
-        RecipeRepositoryImpl(remoteDataSource: RecipeRemoteDataSourceImpl()),
-      )..loadInitialData(),
+      create: (context) => _createRecipeCubit()..loadInitialData(),
       child: const RecipeView(),
     );
   }
