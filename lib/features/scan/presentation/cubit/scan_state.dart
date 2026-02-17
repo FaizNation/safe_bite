@@ -21,6 +21,8 @@ class ScanSuccess extends ScanState {
   List<Object> get props => [result];
 }
 
+class ScanSaved extends ScanState {}
+
 class ScanFailure extends ScanState {
   final String message;
 

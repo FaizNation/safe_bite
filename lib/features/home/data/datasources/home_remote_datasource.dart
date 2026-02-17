@@ -6,4 +6,6 @@ abstract class HomeRemoteDataSource {
   Future<Map<String, dynamic>?> getUserProfileData(String uid);
 
   Future<List<FoodItemModel>> getExpiringItems(String userId);
+
+  Future<void> deleteFoodItem(String userId, String documentId);
 }

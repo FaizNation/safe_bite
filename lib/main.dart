@@ -27,6 +27,12 @@ import 'features/stats/data/datasources/stats_remote_datasource_impl.dart';
 import 'features/stats/data/repositories/stats_repository_impl.dart';
 import 'features/stats/domain/usecases/get_stats_usecase.dart';
 import 'features/stats/presentation/cubit/stats_cubit.dart';
+import 'features/home/data/datasources/home_remote_datasource_impl.dart';
+import 'features/home/data/repositories/home_repository_impl.dart';
+import 'features/home/domain/usecases/get_user_profile.dart';
+import 'features/home/domain/usecases/get_expiring_items.dart';
+import 'features/home/domain/usecases/delete_food_item.dart';
+import 'features/home/presentation/cubit/home_cubit.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -97,6 +103,19 @@ class SafeBiteApp extends StatelessWidget {
                 getStats: GetStatsUseCase(statsRepository),
                 getCurrentUser: GetCurrentUserUseCase(authRepository),
               )..loadStats();
+            },
+          ),
+          BlocProvider<HomeCubit>(
+            create: (context) {
+              final homeDatasource = HomeRemoteDataSourceImpl();
+              final homeRepository = HomeRepositoryImpl(
+                remoteDataSource: homeDatasource,
+              );
+              return HomeCubit(
+                getUserProfile: GetUserProfileUseCase(homeRepository),
+                getExpiringItems: GetExpiringItemsUseCase(homeRepository),
+                deleteFoodItem: DeleteFoodItemUseCase(homeRepository),
+              );
             },
           ),
         ],

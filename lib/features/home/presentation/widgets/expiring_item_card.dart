@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:safe_bite/core/utils/expiry_helper.dart';
+import 'package:safe_bite/features/home/presentation/cubit/home_cubit.dart';
 import 'package:safe_bite/features/home/presentation/pages/food_item_detail_page.dart';
 import 'package:safe_bite/features/scan/domain/entities/food_analysis.dart';
 
@@ -8,6 +10,36 @@ class ExpiringItemCard extends StatelessWidget {
   final FoodItem item;
 
   const ExpiringItemCard({super.key, required this.item});
+
+  Future<bool> _confirmDelete(BuildContext context) async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          'Hapus Bahan Makanan',
+          style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+        ),
+        content: Text(
+          'Apakah kamu yakin ingin menghapus "${item.foodName}"?',
+          style: GoogleFonts.poppins(),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text('Batal', style: GoogleFonts.poppins()),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(
+              'Hapus',
+              style: GoogleFonts.poppins(color: Colors.red),
+            ),
+          ),
+        ],
+      ),
+    );
+    return result ?? false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +50,25 @@ class ExpiringItemCard extends StatelessWidget {
     final status = getExpiryStatus(daysUntilExpiry);
     final statusColor = getExpiryStatusColor(daysUntilExpiry);
 
-    return GestureDetector(
+    return Dismissible(
+      key: Key(item.documentId ?? item.foodName),
+      direction: DismissDirection.endToStart,
+      confirmDismiss: (direction) => _confirmDelete(context),
+      onDismissed: (direction) {
+        if (item.documentId != null) {
+          context.read<HomeCubit>().deleteFoodItem(item.documentId!);
+        }
+      },
+      background: Container(
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(right: 20),
+        decoration: BoxDecoration(
+          color: Colors.red.shade400,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: const Icon(Icons.delete, color: Colors.white, size: 28),
+      ),
+      child: GestureDetector(
       onTap: () {
         Navigator.push(
           context,
@@ -48,6 +98,7 @@ class ExpiringItemCard extends StatelessWidget {
             _buildQuantityBadge(),
           ],
         ),
+      ),
       ),
     );
   }

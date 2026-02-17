@@ -42,6 +42,7 @@ class ScanCubit extends Cubit<ScanState> {
         analysis: analysis,
         imageBytes: imageBytes,
       );
+      emit(ScanSaved());
     } catch (e) {
       emit(ScanFailure('Failed to save: $e'));
       rethrow;

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:safe_bite/features/profile/presentation/bloc/profile_cubit.dart';
+import 'package:safe_bite/features/profile/presentation/bloc/profile_state.dart';
 import 'package:safe_bite/features/stats/domain/entities/stat_item.dart';
 import 'package:safe_bite/features/stats/presentation/cubit/stats_cubit.dart';
 import 'package:safe_bite/features/stats/presentation/cubit/stats_state.dart';
@@ -20,7 +22,11 @@ class StatsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const userName = 'User';
+    return BlocBuilder<ProfileCubit, ProfileState>(
+      builder: (context, profileState) {
+        final userName = profileState is ProfileLoaded
+            ? (profileState.user.name ?? 'User')
+            : 'User';
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -80,6 +86,8 @@ class StatsView extends StatelessWidget {
           ),
         ),
       ),
+    );
+      },
     );
   }
 

@@ -1,17 +1,21 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:safe_bite/features/home/domain/usecases/get_user_profile.dart';
 import 'package:safe_bite/features/home/domain/usecases/get_expiring_items.dart';
+import 'package:safe_bite/features/home/domain/usecases/delete_food_item.dart';
 import 'home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {
   final GetUserProfileUseCase _getUserProfile;
   final GetExpiringItemsUseCase _getExpiringItems;
+  final DeleteFoodItemUseCase _deleteFoodItem;
 
   HomeCubit({
     required GetUserProfileUseCase getUserProfile,
     required GetExpiringItemsUseCase getExpiringItems,
+    required DeleteFoodItemUseCase deleteFoodItem,
   }) : _getUserProfile = getUserProfile,
        _getExpiringItems = getExpiringItems,
+       _deleteFoodItem = deleteFoodItem,
        super(HomeInitial());
 
   Future<void> loadHomeData() async {
@@ -41,6 +45,15 @@ class HomeCubit extends Cubit<HomeState> {
     if (state is HomeLoaded) {
       final loadedState = state as HomeLoaded;
       emit(loadedState.copyWith(selectedCategory: category));
+    }
+  }
+
+  Future<void> deleteFoodItem(String documentId) async {
+    try {
+      await _deleteFoodItem(documentId);
+      await loadHomeData();
+    } catch (e) {
+      emit(HomeError(e.toString()));
     }
   }
 }

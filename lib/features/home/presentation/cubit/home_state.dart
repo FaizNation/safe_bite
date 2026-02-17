@@ -25,16 +25,15 @@ class HomeLoaded extends HomeState {
     this.selectedCategory = 'all',
   });
 
-  /// Items filtered by the currently selected category.
   List<FoodItem> get filteredItems =>
       filterItemsByCategory(expiringItems, selectedCategory);
 
-  /// Number of items expiring within 3 days.
   int get expiringCount => expiringItems
-      .where((item) => calculateDaysUntilExpiry(item.expiryDate) <= 3)
+      .where(
+        (item) => resolveDaysUntilExpiry(item.shelfLife, item.expiryDate) <= 3,
+      )
       .length;
 
-  /// Total number of saved items.
   int get savedCount => expiringItems.length;
 
   @override

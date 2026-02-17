@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'dart:typed_data';
 
 class FoodItem extends Equatable {
+  final String? documentId;
   final String foodName;
   final String category;
   final String freshnessLevel;
@@ -17,6 +18,7 @@ class FoodItem extends Equatable {
   final Uint8List? imageBlob;
 
   const FoodItem({
+    this.documentId,
     required this.foodName,
     required this.category,
     required this.freshnessLevel,
@@ -34,6 +36,7 @@ class FoodItem extends Equatable {
 
   @override
   List<Object?> get props => [
+    documentId,
     foodName,
     category,
     freshnessLevel,

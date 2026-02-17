@@ -35,4 +35,15 @@ class HomeRepositoryImpl implements HomeRepository {
       throw Exception('Failed to fetch expiring items: $e');
     }
   }
+
+  @override
+  Future<void> deleteFoodItem(String documentId) async {
+    try {
+      final uid = await _remoteDataSource.getCurrentUserId();
+      if (uid == null) throw Exception('User not logged in');
+      await _remoteDataSource.deleteFoodItem(uid, documentId);
+    } catch (e) {
+      throw Exception('Failed to delete food item: $e');
+    }
+  }
 }

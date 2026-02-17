@@ -5,6 +5,7 @@ import 'package:safe_bite/features/scan/domain/entities/food_analysis.dart';
 
 class FoodItemModel extends FoodItem {
   const FoodItemModel({
+    super.documentId,
     required super.foodName,
     required super.category,
     required super.freshnessLevel,
@@ -20,7 +21,7 @@ class FoodItemModel extends FoodItem {
     super.imageBlob,
   });
 
-  factory FoodItemModel.fromJson(Map<String, dynamic> json) {
+  factory FoodItemModel.fromJson(Map<String, dynamic> json, {String? docId}) {
     List<int>? box;
     if (json['box_2d'] != null) {
       box = List<int>.from(json['box_2d']);
@@ -47,6 +48,7 @@ class FoodItemModel extends FoodItem {
     }
 
     return FoodItemModel(
+      documentId: docId,
       foodName: json['food_name'] ?? 'Unknown',
       category: json['category'] ?? 'Other',
       freshnessLevel: json['freshness_level'] ?? 'Unknown',

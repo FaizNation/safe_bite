@@ -55,7 +55,17 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
         .get();
 
     return snapshot.docs.map((doc) {
-      return FoodItemModel.fromJson(doc.data());
+      return FoodItemModel.fromJson(doc.data(), docId: doc.id);
     }).toList();
+  }
+
+  @override
+  Future<void> deleteFoodItem(String userId, String documentId) async {
+    await _firestore
+        .collection('users')
+        .doc(userId)
+        .collection('food_items')
+        .doc(documentId)
+        .delete();
   }
 }
