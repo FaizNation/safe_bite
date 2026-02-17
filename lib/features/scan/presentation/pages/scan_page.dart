@@ -1,16 +1,13 @@
 import 'dart:io';
-import 'dart:ui';
+import 'dart:typed_data';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:safe_bite/core/utils/app_logger.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:safe_bite/features/scan/presentation/cubit/scan_cubit.dart';
+import 'package:safe_bite/features/scan/presentation/cubit/scan_state.dart';
 import 'camera_page.dart';
-import '../../data/repositories/scan_repository_impl.dart';
-import '../cubit/scan_cubit.dart';
-import '../cubit/scan_state.dart';
 import 'package:safe_bite/features/scan/domain/entities/food_analysis.dart';
 
 class ScanPage extends StatelessWidget {
@@ -18,10 +15,7 @@ class ScanPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ScanCubit(ScanRepositoryImpl()),
-      child: const ScanView(),
-    );
+    return const ScanView();
   }
 }
 
@@ -35,6 +29,7 @@ class ScanView extends StatefulWidget {
 class _ScanViewState extends State<ScanView> {
   final ImagePicker _picker = ImagePicker();
   XFile? _image;
+  Uint8List? _imageBytes;
 
   @override
   void initState() {
@@ -60,11 +55,13 @@ class _ScanViewState extends State<ScanView> {
       }
 
       if (pickedFile != null) {
+        final bytes = await pickedFile.readAsBytes();
         setState(() {
           _image = pickedFile;
+          _imageBytes = bytes;
         });
         if (mounted) {
-          context.read<ScanCubit>().analyzeImage(_image!);
+          context.read<ScanCubit>().analyzeImage(bytes);
         }
       } else {
         if (mounted) {
@@ -80,6 +77,7 @@ class _ScanViewState extends State<ScanView> {
   void _resetScan() {
     setState(() {
       _image = null;
+      _imageBytes = null;
     });
     context.read<ScanCubit>().reset();
     _pickImage(ImageSource.camera);
@@ -111,7 +109,7 @@ class _ScanViewState extends State<ScanView> {
           if (state is ScanSuccess && state.result.isFood) {
             return _buildResultView(context, state.result);
           }
-          // Show loading or nothing
+
           return const Center(
             child: CircularProgressIndicator(color: Color(0xFF6B9F5E)),
           );
@@ -121,7 +119,6 @@ class _ScanViewState extends State<ScanView> {
   }
 
   Widget _buildResultView(BuildContext context, FoodAnalysis data) {
-    // Multi-item support
     final items = data.items;
 
     return Scaffold(
@@ -155,7 +152,7 @@ class _ScanViewState extends State<ScanView> {
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.grey.withOpacity(0.2),
+                        color: Colors.grey.withValues(alpha: 0.2),
                         blurRadius: 6,
                         offset: const Offset(0, 2),
                       ),
@@ -207,7 +204,6 @@ class _ScanViewState extends State<ScanView> {
                       ),
                       const SizedBox(width: 16),
 
-                      // Details (Center)
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -241,7 +237,6 @@ class _ScanViewState extends State<ScanView> {
                         ),
                       ),
 
-                      // Status Icon (Right)
                       _buildFreshnessIcon(item.freshnessLevel),
                     ],
                   ),
@@ -250,7 +245,6 @@ class _ScanViewState extends State<ScanView> {
             ),
           ),
 
-          // Bottom Button
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: SizedBox(
@@ -259,56 +253,38 @@ class _ScanViewState extends State<ScanView> {
                 onPressed: () async {
                   AppLogger.info("Button 'Simpan' PRESSED!");
                   try {
-                    // Check Firebase App
-                    AppLogger.debug("Firebase Project: ${Firebase.app().options.projectId}");
-                    
-                    final user = FirebaseAuth.instance.currentUser;
-                    AppLogger.debug("Current User: ${user?.uid}");
-                    
-                    if (user != null) {
-                      AppLogger.debug('Items to save: ${data.items.length}');
-                      
-                      // Show loading
-                      showDialog(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (c) => const Center(child: CircularProgressIndicator()),
+                    showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (c) =>
+                          const Center(child: CircularProgressIndicator()),
+                    );
+
+                    await context.read<ScanCubit>().saveResults(
+                      data,
+                      _imageBytes,
+                    );
+
+                    if (context.mounted) Navigator.pop(context);
+
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Semua data berhasil disimpan ✅"),
+                          backgroundColor: Colors.green,
+                        ),
                       );
-
-                      await context.read<ScanCubit>().saveResults(
-                        user.uid,
-                        data,
-                        _image,
-                      );
-
-                      // Close loading
-                      if (context.mounted) Navigator.pop(context);
-
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("Semua data berhasil disimpan ✅"),
-                            backgroundColor: Colors.green,
-                          ),
-                        );
-                        _resetScan();
-                      }
-                    } else {
-                      if (context.mounted) {
-                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("Error: User tidak ditemukan. Silakan login ulang."),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
-                      }
+                      _resetScan();
                     }
                   } catch (e, stack) {
-                    AppLogger.error("CRITICAL ERROR IN SAVE", error: e, stackTrace: stack);
-                    
-                    // Close loading if open
+                    AppLogger.error(
+                      "CRITICAL ERROR IN SAVE",
+                      error: e,
+                      stackTrace: stack,
+                    );
+
                     if (context.mounted && Navigator.canPop(context)) {
-                       Navigator.pop(context); 
+                      Navigator.pop(context);
                     }
 
                     if (context.mounted) {

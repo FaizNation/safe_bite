@@ -2,8 +2,8 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import '../cubit/camera/camera_cubit.dart';
-import '../cubit/camera/camera_state.dart';
+import 'package:safe_bite/features/scan/presentation/cubit/camera/camera_cubit.dart';
+import 'package:safe_bite/features/scan/presentation/cubit/camera/camera_state.dart';
 
 class CameraPage extends StatelessWidget {
   const CameraPage({super.key});
@@ -41,7 +41,6 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     final cubit = context.read<CameraCubit>();
     if (state == AppLifecycleState.inactive) {
-
     } else if (state == AppLifecycleState.resumed) {
       cubit.initCamera();
     }
@@ -72,14 +71,11 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
             return Stack(
               fit: StackFit.expand,
               children: [
-                // Camera Preview
                 CameraPreview(state.controller),
 
-                // Overlay
                 SafeArea(
                   child: Column(
                     children: [
-                      // Top Bar
                       Padding(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 16,
@@ -120,16 +116,13 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
                         ),
                       ),
 
-                      // Spacer
                       const Spacer(),
 
-                      // Guide Frame (Visual only)
                       Center(
                         child: Container(
                           width: MediaQuery.of(context).size.width * 0.8,
                           height: MediaQuery.of(context).size.width * 0.8,
                           decoration: BoxDecoration(
-                            // Border removed
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Column(
@@ -156,10 +149,8 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
                         ),
                       ),
 
-                      // Spacer
                       const Spacer(),
 
-                      // Bottom Controls Container
                       Align(
                         alignment: Alignment.bottomCenter,
                         child: Container(
@@ -176,7 +167,6 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              // Gallery Preview (Placeholder)
                               GestureDetector(
                                 onTap: () async {
                                   final ImagePicker picker = ImagePicker();
@@ -209,7 +199,6 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
                                 ),
                               ),
 
-                              // Shutter Button
                               GestureDetector(
                                 onTap: () =>
                                     context.read<CameraCubit>().takePicture(),
@@ -234,7 +223,6 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
                                 ),
                               ),
 
-                              // Switch Camera Button
                               GestureDetector(
                                 onTap: () =>
                                     context.read<CameraCubit>().switchCamera(),
@@ -242,9 +230,7 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
                                   width: 50,
                                   height: 50,
                                   decoration: BoxDecoration(
-                                    color: const Color(
-                                      0xFFE8F5E9,
-                                    ), // Light green
+                                    color: const Color(0xFFE8F5E9),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: const Icon(

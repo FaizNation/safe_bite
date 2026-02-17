@@ -10,6 +10,7 @@ import 'features/auth/data/datasources/auth_remote_datasource_impl.dart';
 import 'features/auth/domain/usecases/login_usecase.dart';
 import 'features/auth/domain/usecases/register_usecase.dart';
 import 'features/auth/domain/usecases/logout_usecase.dart';
+import 'features/auth/domain/usecases/get_current_user_usecase.dart';
 import 'features/auth/presentation/cubit/auth_cubit.dart';
 import 'features/profile/data/datasources/profile_remote_datasource_impl.dart';
 import 'features/profile/data/repositories/profile_repository_impl.dart';
@@ -17,6 +18,11 @@ import 'features/profile/domain/usecases/get_profile_usecase.dart';
 import 'features/profile/domain/usecases/update_profile_usecase.dart';
 import 'features/profile/domain/usecases/change_password_usecase.dart';
 import 'features/profile/presentation/bloc/profile_cubit.dart';
+import 'features/scan/data/datasources/scan_remote_data_source_impl.dart';
+import 'features/scan/data/repositories/scan_repository_impl.dart';
+import 'features/scan/domain/usecases/analyze_image_use_case.dart';
+import 'features/scan/domain/usecases/save_food_items_use_case.dart';
+import 'features/scan/presentation/cubit/scan_cubit.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -59,6 +65,20 @@ class SafeBiteApp extends StatelessWidget {
                 getProfile: GetProfileUseCase(repository),
                 updateProfile: UpdateProfileUseCase(repository),
                 changePassword: ChangePasswordUseCase(repository),
+              );
+            },
+          ),
+          BlocProvider<ScanCubit>(
+            create: (context) {
+              final authRepository = context.read<AuthRepository>();
+              final scanDatasource = ScanRemoteDataSourceImpl();
+              final scanRepository = ScanRepositoryImpl(
+                remoteDataSource: scanDatasource,
+              );
+              return ScanCubit(
+                analyzeImage: AnalyzeImageUseCase(scanRepository),
+                saveFoodItems: SaveFoodItemsUseCase(scanRepository),
+                getCurrentUser: GetCurrentUserUseCase(authRepository),
               );
             },
           ),

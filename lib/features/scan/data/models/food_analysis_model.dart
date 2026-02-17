@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../domain/entities/food_analysis.dart';
+import 'package:safe_bite/features/scan/domain/entities/food_analysis.dart';
 
 class FoodItemModel extends FoodItem {
   const FoodItemModel({
@@ -31,7 +31,6 @@ class FoodItemModel extends FoodItem {
       if (json['image_blob'] is Blob) {
         blobBytes = (json['image_blob'] as Blob).bytes;
       } else if (json['image_blob'] is String) {
-        // Handle base64 string if ever stored that way
         try {
           blobBytes = base64Decode(json['image_blob']);
         } catch (_) {}
@@ -89,7 +88,6 @@ class FoodAnalysisModel extends FoodAnalysis {
   const FoodAnalysisModel({required super.isFood, required super.items});
 
   factory FoodAnalysisModel.fromJson(String jsonString) {
-    // Clean potential markdown
     String cleanJson = jsonString
         .replaceAll(RegExp(r'^```json\s*'), '')
         .replaceAll(RegExp(r'\s*```$'), '');
