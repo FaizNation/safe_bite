@@ -1,22 +1,17 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../data/repositories/stats_repository_impl.dart';
-import '../../domain/entities/stat_item.dart';
-import '../cubit/stats_cubit.dart';
-import '../cubit/stats_state.dart';
-import '../widgets/donut_chart_widget.dart';
-import '../widgets/stats_legend_widget.dart';
+import 'package:safe_bite/features/stats/domain/entities/stat_item.dart';
+import 'package:safe_bite/features/stats/presentation/cubit/stats_cubit.dart';
+import 'package:safe_bite/features/stats/presentation/cubit/stats_state.dart';
+import 'package:safe_bite/features/stats/presentation/widgets/donut_chart_widget.dart';
+import 'package:safe_bite/features/stats/presentation/widgets/stats_legend_widget.dart';
 
 class StatsPage extends StatelessWidget {
   const StatsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => StatsCubit(StatsRepositoryImpl())..loadStats(),
-      child: const StatsView(),
-    );
+    return const StatsView();
   }
 }
 
@@ -25,8 +20,7 @@ class StatsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
-    final userName = user?.displayName ?? 'User'; // Adjust generic name
+    const userName = 'User';
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -35,14 +29,12 @@ class StatsView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Custom Header with Image
               _buildHeader(userName),
 
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Column(
                   children: [
-                    // Time Toggle
                     BlocBuilder<StatsCubit, StatsState>(
                       builder: (context, state) {
                         TimeRange currentRange = TimeRange.bulan;
@@ -54,7 +46,6 @@ class StatsView extends StatelessWidget {
                     ),
                     const SizedBox(height: 32),
 
-                    // Chart Area
                     BlocBuilder<StatsCubit, StatsState>(
                       builder: (context, state) {
                         if (state is StatsLoading) {
@@ -81,7 +72,7 @@ class StatsView extends StatelessWidget {
                       },
                     ),
 
-                    const SizedBox(height: 30), // Bottom padding
+                    const SizedBox(height: 30),
                   ],
                 ),
               ),
@@ -131,9 +122,8 @@ class StatsView extends StatelessWidget {
   Widget _buildTimeToggle(BuildContext context, TimeRange currentRange) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey.shade100, // Background of the toggle container
+        color: Colors.grey.shade100,
         borderRadius: BorderRadius.circular(12),
-        // Add shadow if needed to look like "elevated" container
       ),
       padding: const EdgeInsets.all(4),
       child: Row(
@@ -166,7 +156,7 @@ class StatsView extends StatelessWidget {
             boxShadow: isSelected
                 ? [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
+                      color: Colors.black.withValues(alpha: 0.1),
                       blurRadius: 4,
                       offset: const Offset(0, 2),
                     ),

@@ -2,6 +2,8 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:safe_bite/features/stats/domain/entities/stat_item.dart';
 
+import 'stats_color_helper.dart';
+
 class DonutChartWidget extends StatelessWidget {
   final List<StatItem> items;
 
@@ -32,10 +34,10 @@ class DonutChartWidget extends StatelessWidget {
               startDegreeOffset: -90,
               sections: items.map((item) {
                 return PieChartSectionData(
-                  color: item.color,
+                  color: getStatsColorForCategory(item.category),
                   value: item.percentage,
                   title: '${item.percentage.toStringAsFixed(0)}%',
-                  radius: 40, // Thickness
+                  radius: 40,
                   titleStyle: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,

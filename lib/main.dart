@@ -23,6 +23,10 @@ import 'features/scan/data/repositories/scan_repository_impl.dart';
 import 'features/scan/domain/usecases/analyze_image_use_case.dart';
 import 'features/scan/domain/usecases/save_food_items_use_case.dart';
 import 'features/scan/presentation/cubit/scan_cubit.dart';
+import 'features/stats/data/datasources/stats_remote_datasource_impl.dart';
+import 'features/stats/data/repositories/stats_repository_impl.dart';
+import 'features/stats/domain/usecases/get_stats_usecase.dart';
+import 'features/stats/presentation/cubit/stats_cubit.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -80,6 +84,19 @@ class SafeBiteApp extends StatelessWidget {
                 saveFoodItems: SaveFoodItemsUseCase(scanRepository),
                 getCurrentUser: GetCurrentUserUseCase(authRepository),
               );
+            },
+          ),
+          BlocProvider<StatsCubit>(
+            create: (context) {
+              final authRepository = context.read<AuthRepository>();
+              final statsDatasource = StatsRemoteDataSourceImpl();
+              final statsRepository = StatsRepositoryImpl(
+                remoteDataSource: statsDatasource,
+              );
+              return StatsCubit(
+                getStats: GetStatsUseCase(statsRepository),
+                getCurrentUser: GetCurrentUserUseCase(authRepository),
+              )..loadStats();
             },
           ),
         ],

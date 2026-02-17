@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../domain/entities/stat_item.dart';
+import 'package:safe_bite/features/stats/domain/entities/stat_item.dart';
+import 'stats_color_helper.dart';
 
 class StatsLegendWidget extends StatelessWidget {
   final List<StatItem> items;
@@ -15,7 +16,7 @@ class StatsLegendWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -36,7 +37,7 @@ class StatsLegendWidget extends StatelessWidget {
             width: 16,
             height: 16,
             decoration: BoxDecoration(
-              color: item.color,
+              color: getStatsColorForCategory(item.category),
               shape: BoxShape.circle,
             ),
           ),
