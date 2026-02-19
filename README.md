@@ -83,14 +83,6 @@ Follow these steps to get a local copy up and running.
     flutter run
     ```
 
-## 📸 Screenshots
-
-*(Add your screenshots here)*
-
-| Home | Scanner | Stats | Recipes |
-|:---:|:---:|:---:|:---:|
-| <img src="assets/images/welcome.png" width="200"> | *(Add Screen)* | *(Add Screen)* | <img src="assets/images/resep_top.png" width="200"> |
-
 ## 👥 Contributors
 
 This project exists thanks to all the people who contribute.
@@ -109,7 +101,6 @@ This project exists thanks to all the people who contribute.
     <img src="https://avatars.githubusercontent.com/u/258619577?v=4" width="50px" title="Leeviray" alt="Leeviray"/>
   </a>
 </div>
-
 
 ---
 
